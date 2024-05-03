@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Logger.h"
 #include <SDL.h>
 #include <iostream>
 
@@ -13,7 +14,7 @@ Game::~Game() {
 void Game::Initalize() {
 	// Intializes everything for SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-		fprintf(stderr, "SDL: Init Intialization Error.\n");
+		Logger::Error("Game.cs: SDL Initialization Error");
 		return;
 	}
 
@@ -28,7 +29,7 @@ void Game::Initalize() {
 
 	// Ensure window intialization
 	if (!window) {
-		fprintf(stderr, "SDL: Window Intialization Error.\n");
+		Logger::Error("Game.cs: Window Initalization Error");
 		return;
 	}
 
@@ -36,13 +37,14 @@ void Game::Initalize() {
 
 	// Ensure renderer intialization
 	if (!renderer) {
-		fprintf(stderr, "SDL: Renderer Intialization Error\n");
+		Logger::Error("Game.cs: Renderer Initalizatino Error");
 		return;
 	}
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
 	// Set game to running state
 	isRunning = true;
+	Logger::Log("Game.cpp: Game Started");
 }
 
 void Game::Run() {
@@ -91,4 +93,6 @@ void Game::Destory() {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
+
+	Logger::Log("Game.cpp: Game Ended");
 }
