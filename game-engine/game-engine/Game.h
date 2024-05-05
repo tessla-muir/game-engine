@@ -9,7 +9,7 @@ private:
 	bool isRunning;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-	ComponentManager* compManager;
+	std::unique_ptr<ComponentManager> compManager;
 
 	public:
 		Game();

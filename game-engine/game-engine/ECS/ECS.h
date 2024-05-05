@@ -88,7 +88,7 @@ class ComponentManager {
 
 		// Vector of component pools, each contains all data for a component type
 		// Vector index is the component type id
-		std::vector<BasePool*> componentPools;
+		std::vector<std::shared_ptr<BasePool>> componentPools;
 
 		// Vector of component signatures, shows which components are used/on for an entitiy
 		// Vector index is the entity id
@@ -96,7 +96,7 @@ class ComponentManager {
 
 		// Map of all the active systems
 		// Index is the system typeid
-		std::unordered_map<std::type_index, System*> systems;
+		std::unordered_map<std::type_index, std::shared_ptr<System>> systems;
 
 	public:
 		ComponentManager() = default;
@@ -147,12 +147,12 @@ void ComponentManager::AddComponent(Entity entity, TArgs&& ...args) {
 
 	// Create pool for component type if needed
 	if (!componentPools[componentId]) {
-		Pool<TComp>* newPool = new Pool<TComp>();
+		std::shared_ptr<Pool<TComp>> newPool = std::make_shared<Pool<TComp>>();
 		componentPools[componentId] = newPool;
 	}
 
 	// Get pool that matches component type (sprite, transform, etc.)
-	Pool<TComp>* pool = Pool<TComp>(componentPools[componentId]);
+    std::shared_ptr<Pool<TComp>> pool = std::static_pointer_cast<Pool<TComp>>(componentPools[componentId]);
 
 	// Ensure the entity id is in the individual component pool, adjust size if not
 	if (entityId >= pool->GetSize()) {
@@ -192,7 +192,7 @@ bool ComponentManager::HasSystem() const {
 template <typename TSys, typename ...TArgs>
 void ComponentManager::AddSystem(TArgs&& ...args) {
 	// Create component
-	TSys* newSys(new TSys(std::forward<TArgs>(args)...));
+	std::shared_ptr<TSys> newSys = std::make_shared<TSys>(std::forward<TArgs>(args)...);
 
 	// Add to map
 	systems.insert(std::make_pair(std::type_index(typeid(TSys)), newSys));

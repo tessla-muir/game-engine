@@ -6,11 +6,11 @@
 
 Game::Game() {
 	isRunning = false;
-	compManager = new ComponentManager();
+	compManager = std::make_unique<ComponentManager>();
 }
 
 Game::~Game() {
-	delete compManager;
+	
 }
 
 void Game::Setup() {
