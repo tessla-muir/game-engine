@@ -6,6 +6,7 @@
 #include <unordered_map> 
 #include <typeindex>
 #include <set>
+#include <memory>
 #include "../Logger/Logger.h"
 
 // Signature to keep track of what components an entity has
@@ -16,7 +17,7 @@ struct BaseComponent {
 		static int nextId;
 };
 
-template <typename T>
+template <typename TComp>
 class Component: public BaseComponent {
 	static int GetId() {
 		static auto id = nextId;
@@ -51,7 +52,7 @@ class System {
 		std::vector<Entity> GetEntities() const;
 		const Signature& GetSignature() const;
 
-		template <typename T> void RequireComponent();
+		template <typename TComp> void RequireComponent();
 };
 
 class BasePool {
@@ -60,10 +61,10 @@ class BasePool {
 };
 
 // A wrapper class for a vector
-template <typename T>
+template <typename TComp>
 class Pool : public BasePool {
 private:
-	std::vector<T> pool;
+	std::vector<TComp> pool;
 
 public:
 	Pool(int size = 100) { Resize(size); }
@@ -73,10 +74,10 @@ public:
 	int GetSize() const { return pool.size(); }
 	void Resize(int size) { pool.resize(size); }
 	void Clear() { pool.clear(); }
-	void Add(T object) { pool.push_back(object); }
-	void Set(int index, T object) { pool[index] = object; }
-	T& Get(int index) { return static_cast<T&>(pool[index]); }
-	T& operator [](unsigned int index) { return pool[index]; }
+	void Add(TComp object) { pool.push_back(object); }
+	void Set(int index, TComp object) { pool[index] = object; }
+	TComp& Get(int index) { return static_cast<TComp&>(pool[index]); }
+	TComp& operator [](unsigned int index) { return pool[index]; }
 };
 
 class ComponentManager {
@@ -105,34 +106,35 @@ class ComponentManager {
 		Entity CreateEntity();
 		//void RemoveEntity(Entity entity);
 
-		template <typename T> bool HasComponent(Entity entity);
-		template <typename T, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
-		template <typename T> void RemoveComponent(Entity entity);
+		template <typename TComp> bool HasComponent(Entity entity) const;
+		template <typename TComp, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
+		template <typename TComp> void RemoveComponent(Entity entity);
 
-		//bool HasSystem(System system);
-		//void AddSystem(System system);
-		//void RemoveSystem(System system);
+		template <typename TSys> bool HasSystem() const;
+		template <typename TSys, typename ...TArgs> void AddSystem(TArgs&& ...args);
+		template <typename TSys> void RemoveSystem();
+		template <typename TSys> TSys& GetSystem() const;
 };
 
-template <typename T>
+template <typename TComp>
 void System::RequireComponent() {
-	const auto componentId = Component<T>::GetId();
+	const auto componentId = Component<TComp>::GetId();
 	signature._Set_unchecked(componentId);
 }
 
-template <typename T>
-bool ComponentManager::HasComponent(Entity entity) {
+template <typename TComp>
+bool ComponentManager::HasComponent(Entity entity) const {
 	// Get component and entity IDs
-	const int componentId = Component<T>.GetId();
+	const int componentId = Component<TComp>.GetId();
 	const int entityId = entity.GetId();
 
 	return entitySignatures[entityId].test(componentId);
 }
 
-template <typename T, typename ...TArgs>
+template <typename TComp, typename ...TArgs>
 void ComponentManager::AddComponent(Entity entity, TArgs&& ...args) {
 	// Get component and entity IDs
-	const int componentId = Component<T>.GetId();
+	const int componentId = Component<TComp>.GetId();
 	const int entityId = entity.GetId();
 
 	// Ensure the component id is in componentPull size, adjust size if not
@@ -142,12 +144,12 @@ void ComponentManager::AddComponent(Entity entity, TArgs&& ...args) {
 
 	// Create pool for component type if needed
 	if (!componentPools[componentId]) {
-		Pool<T>* newPool = new Pool<T>();
+		Pool<TComp>* newPool = new Pool<TComp>();
 		componentPools[componentId] = newPool;
 	}
 
 	// Get pool that matches component type (sprite, transform, etc.)
-	Pool<T>* pool = Pool<T>(componentPools[componentId]);
+	Pool<TComp>* pool = Pool<TComp>(componentPools[componentId]);
 
 	// Ensure the entity id is in the individual component pool, adjust size if not
 	if (entityId >= pool->GetSize()) {
@@ -155,20 +157,20 @@ void ComponentManager::AddComponent(Entity entity, TArgs&& ...args) {
 	}
 
 	// Create the new component to add, passing arguments
-	T newComp(std::forward<TArgs>(args)...);
+	TComp newComp(std::forward<TArgs>(args)...);
 	pool->Set(entityId, newComp);
 
 	// Set new signature
 	entitySignatures[entityId].set(componentId);
 }
 
-template <typename T>
+template <typename TComp>
 void ComponentManager::RemoveComponent(Entity entity) {
 	// Get component and entity IDs
-	const int componentId = Component<T>.GetId();
+	const int componentId = Component<TComp>.GetId();
 	const int entityId = entity.GetId();
 
-	if (!HasComponent<T>(entity)) {
+	if (!HasComponent<TComp>(entity)) {
 		Logger::Warn("ECS.h: Entity " + std::to_string(entityId) + " didn't have component " + std::to_string(componentId) + " to remove.");
 		return;
 	}
@@ -177,6 +179,36 @@ void ComponentManager::RemoveComponent(Entity entity) {
 
 	// Deactivate signature part
 	entitySignatures[entityId].set(componentId, false);
+}
+
+template <typename TSys> 
+bool ComponentManager::HasSystem() const {
+	return systems.find(std::type_index(typeid(TSys))) != system.end();
+}
+
+template <typename TSys, typename ...TArgs>
+void ComponentManager::AddSystem(TArgs&& ...args) {
+	// Create component
+	TSys* newSys(new TSys(std::forward<TArgs>(args)...));
+
+	// Add to map
+	systems.insert(std::make_pair(std::type_index(typeid(TSys)), newSys));
+}
+
+template <typename TSys>
+void ComponentManager::RemoveSystem() {
+	// Find the system to remove
+	auto system = systems.find(std::type_index(typeid(TSys)));
+
+	// Remove system
+	systems.erase(system);
+}
+
+template <typename TSys> 
+TSys& ComponentManager::GetSystem() const {
+	// Find & return the system
+	auto system = systems.find(std::type_index(typeid(TSys)));
+	return *std::static_pointer_cast<TSys>(system->second);
 }
 
 #endif 
