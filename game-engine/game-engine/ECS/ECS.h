@@ -114,6 +114,9 @@ class ComponentManager {
 		template <typename TSys, typename ...TArgs> void AddSystem(TArgs&& ...args);
 		template <typename TSys> void RemoveSystem();
 		template <typename TSys> TSys& GetSystem() const;
+
+		// Determines if an entity should be added to interested systems by signature
+		void AddEntityToSystems(Entity entity);
 };
 
 template <typename TComp>

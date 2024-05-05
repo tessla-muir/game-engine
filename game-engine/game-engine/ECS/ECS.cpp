@@ -44,3 +44,17 @@ Entity ComponentManager::CreateEntity() {
 	return entity;
 }
 
+void ComponentManager::AddEntityToSystems(Entity entity) {
+	const int entityId = entity.GetId();
+	const Signature& entitySignature = entitySignatures[entityId];
+
+	// Look through all systems
+	for (auto& system : systems) {
+		const Signature& systemSignature = system.second->GetSignature();
+
+		// Add entity to system if wanted
+		if ((entitySignature & systemSignature) == systemSignature) {
+			system.second->AddEntity(entity);
+		}
+	}
+}
