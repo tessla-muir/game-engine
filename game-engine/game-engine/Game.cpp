@@ -1,5 +1,6 @@
 #include "Game.h"
-#include "Logger.h"
+#include "./Logger/Logger.h"
+#include "./ECS/ECS.h"
 #include <SDL.h>
 #include <iostream>
 
