@@ -1,14 +1,30 @@
 #include "Game.h"
-#include "Logger.h"
+#include "./Logger/Logger.h"
+#include "./ECS/ECS.h"
 #include <SDL.h>
 #include <iostream>
+#include "./Components/TransformComponent.h"
+#include "./Components/RigidbodyComponent.h"
+
+
 
 Game::Game() {
 	isRunning = false;
+	compManager = std::make_unique<ComponentManager>();
 }
 
 Game::~Game() {
+	
+}
 
+void Game::Setup() {
+	Entity test = compManager->CreateEntity();
+	test.AddComponent<TransformComponent>(glm::vec2(20.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
+	test.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
+	test.RemoveComponent<TransformComponent>();
+
+	Entity test2 = compManager->CreateEntity();
+	compManager->RemoveEntity(test);
 }
 
 void Game::Initalize() {
@@ -76,7 +92,12 @@ void Game::ProcessInput() {
 }
 
 void Game::Update() {
+	int waitTime = FRAME_MILISECS - (SDL_GetTicks() - prevFrameMilisecs);
+	if (waitTime > 0 && waitTime <= FRAME_MILISECS) {
+		SDL_Delay(waitTime);
+	}
 
+	compManager->Update();
 }
 
 void Game::Render() {

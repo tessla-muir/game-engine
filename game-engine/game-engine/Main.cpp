@@ -6,6 +6,7 @@ int main(int argc, char* argv[]) {
 	Game game;
 
 	game.Initalize();
+	game.Setup();
 	game.Run();
 	game.Destory();
 
