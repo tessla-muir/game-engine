@@ -6,10 +6,16 @@
 
 Game::Game() {
 	isRunning = false;
+	compManager = new ComponentManager();
 }
 
 Game::~Game() {
+	delete compManager;
+}
 
+void Game::Setup() {
+	Entity test = compManager->CreateEntity();
+	Entity test2 = compManager->CreateEntity();
 }
 
 void Game::Initalize() {

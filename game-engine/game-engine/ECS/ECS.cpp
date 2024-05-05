@@ -28,8 +28,12 @@ const Signature& System::GetSignature() const {
 
 void ComponentManager::Update() {
 	// Add entites waiting to be added
+	for (Entity entity : entitiesToAdd) {
+		AddEntityToSystems(entity);
+	}
+	entitiesToAdd.clear(); // Clear for next frame
 
-	// Remove entites waiting to be removed
+	// TODO: Remove entites waiting to be removed
 }
 
 Entity ComponentManager::CreateEntity() {
@@ -38,6 +42,10 @@ Entity ComponentManager::CreateEntity() {
 
 	Entity entity(id);
 	entitiesToAdd.insert(entity);
+
+	if (id >= entitySignatures.size()) {
+		entitySignatures.resize(id + 1);
+	}
 
 	Logger::Log("Entity created with id " + std::to_string(id));
 
