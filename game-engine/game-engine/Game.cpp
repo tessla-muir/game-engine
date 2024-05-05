@@ -6,6 +6,8 @@
 #include "./Components/TransformComponent.h"
 #include "./Components/RigidbodyComponent.h"
 
+
+
 Game::Game() {
 	isRunning = false;
 	compManager = std::make_unique<ComponentManager>();
@@ -23,9 +25,6 @@ void Game::Setup() {
 
 	Entity test2 = compManager->CreateEntity();
 	compManager->RemoveEntity(test);
-	
-	Entity test3 = compManager->CreateEntity();
-	Entity test4 = compManager->CreateEntity();
 }
 
 void Game::Initalize() {
@@ -93,6 +92,11 @@ void Game::ProcessInput() {
 }
 
 void Game::Update() {
+	int waitTime = FRAME_MILISECS - (SDL_GetTicks() - prevFrameMilisecs);
+	if (waitTime > 0 && waitTime <= FRAME_MILISECS) {
+		SDL_Delay(waitTime);
+	}
+
 	compManager->Update();
 }
 
