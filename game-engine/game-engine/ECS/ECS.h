@@ -8,6 +8,7 @@
 #include <set>
 #include <memory>
 #include "../Logger/Logger.h"
+#include <glm.hpp>
 
 // Signature to keep track of what components an entity has
 typedef std::bitset<32> Signature;
@@ -19,10 +20,11 @@ struct BaseComponent {
 
 template <typename TComp>
 class Component: public BaseComponent {
-	static int GetId() {
-		static auto id = nextId;
-		return id;
-	}
+	public:
+		static int GetId() {
+			static auto id = nextId++;
+			return id;
+		}
 };
 
 class Entity {
@@ -137,7 +139,7 @@ bool ComponentManager::HasComponent(Entity entity) const {
 template <typename TComp, typename ...TArgs>
 void ComponentManager::AddComponent(Entity entity, TArgs&& ...args) {
 	// Get component and entity IDs
-	const int componentId = Component<TComp>.GetId();
+	const int componentId = Component<TComp>::GetId();
 	const int entityId = entity.GetId();
 
 	// Ensure the component id is in componentPull size, adjust size if not
@@ -154,17 +156,14 @@ void ComponentManager::AddComponent(Entity entity, TArgs&& ...args) {
 	// Get pool that matches component type (sprite, transform, etc.)
     std::shared_ptr<Pool<TComp>> pool = std::static_pointer_cast<Pool<TComp>>(componentPools[componentId]);
 
-	// Ensure the entity id is in the individual component pool, adjust size if not
-	if (entityId >= pool->GetSize()) {
-		pool->Resize(numEntities);
-	}
-
 	// Create the new component to add, passing arguments
 	TComp newComp(std::forward<TArgs>(args)...);
 	pool->Set(entityId, newComp);
 
 	// Set new signature
 	entitySignatures[entityId].set(componentId);
+
+	Logger::Log("Component " + std::to_string(componentId) + " added to entity " + std::to_string(entityId));
 }
 
 template <typename TComp>
@@ -178,7 +177,9 @@ void ComponentManager::RemoveComponent(Entity entity) {
 		return;
 	}
 
-	// TODO: Deallocate
+	// Remove component
+	std::shared_ptr<Pool<TComp>> compPool = std::static_pointer_cast<Pool<TComp>>(componentPools[componentId]);
+	compPool->Remove(entityId);
 
 	// Deactivate signature part
 	entitySignatures[entityId].set(componentId, false);
