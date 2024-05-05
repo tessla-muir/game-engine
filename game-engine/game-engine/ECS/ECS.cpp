@@ -8,6 +8,10 @@ int Entity::GetId() const {
 	return id;
 }
 
+void Entity::Destroy() {
+	compManager->RemoveEntity(*this);
+}
+
 void System::AddEntity(Entity entity) {
 	entities.push_back(entity);
 }
@@ -33,20 +37,35 @@ void ComponentManager::Update() {
 	}
 	entitiesToAdd.clear(); // Clear for next frame
 
-	// TODO: Remove entites waiting to be removed
+	// Remove entites waiting to be removed
+	for (Entity entity : entitiesToRemove) {
+		RemoveEntityFromSystems(entity);
+		entitySignatures[entity.GetId()].reset();
+
+		// Allow the id to be reused
+		availableIds.push_back(entity.GetId());
+	}
+	entitiesToRemove.clear();
 }
 
 Entity ComponentManager::CreateEntity() {
 	int id;
-	id = numEntities++;
+
+	if (availableIds.empty()) {
+		// Happens if not ids are available to be reused
+		id = numEntities++;
+		if (id >= entitySignatures.size()) {
+			entitySignatures.resize(id + 1);
+		}
+	} else {
+		// Reuse an id if available
+		id = availableIds.front();
+		availableIds.pop_front();
+	}
 
 	Entity entity(id);
 	entity.compManager = this;
 	entitiesToAdd.insert(entity);
-
-	if (id >= entitySignatures.size()) {
-		entitySignatures.resize(id + 1);
-	}
 
 	Logger::Log("Entity created with id " + std::to_string(id));
 
@@ -65,5 +84,16 @@ void ComponentManager::AddEntityToSystems(Entity entity) {
 		if ((entitySignature & systemSignature) == systemSignature) {
 			system.second->AddEntity(entity);
 		}
+	}
+}
+
+void ComponentManager::RemoveEntity(Entity entity) {
+	entitiesToRemove.insert(entity);
+	Logger::Log("Entity removed with id " + std::to_string(entity.GetId()));
+}
+
+void ComponentManager::RemoveEntityFromSystems(Entity entity) {
+	for (auto system : systems) {
+		system.second->RemoveEntity(entity);
 	}
 }

@@ -6,6 +6,7 @@
 #include <unordered_map> 
 #include <typeindex>
 #include <set>
+#include <deque>
 #include <memory>
 #include "../Logger/Logger.h"
 #include <glm.hpp>
@@ -37,6 +38,7 @@ class Entity {
 		Entity(int id) : id(id) {};
 		int GetId() const;
 		ComponentManager* compManager;
+		void Destroy();
 		
 		Entity& operator =(const Entity& entitiy) = default;
 		bool operator ==(const Entity& entity) const { return id == entity.id; }
@@ -108,26 +110,31 @@ class ComponentManager {
 		// Index is the system typeid
 		std::unordered_map<std::type_index, std::shared_ptr<System>> systems;
 
+		// Holds freed ids
+		std::deque<int> availableIds;
+
 	public:
 		ComponentManager() = default;
 
 		void Update(); // Waits until frame end to update entites (add/remove)
 
+		// Entity Management
 		Entity CreateEntity();
-		//void RemoveEntity(Entity entity);
+		void RemoveEntity(Entity entity);
+		void AddEntityToSystems(Entity entity);
+		void RemoveEntityFromSystems(Entity entity);
 
+		// Component Management
 		template <typename TComp> bool HasComponent(Entity entity) const;
 		template <typename TComp> TComp& GetComponent(Entity entity) const;
 		template <typename TComp, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
 		template <typename TComp> void RemoveComponent(Entity entity);
 
+		// System Management
 		template <typename TSys> bool HasSystem() const;
 		template <typename TSys, typename ...TArgs> void AddSystem(TArgs&& ...args);
 		template <typename TSys> void RemoveSystem();
 		template <typename TSys> TSys& GetSystem() const;
-
-		// Determines if an entity should be added to interested systems by signature
-		void AddEntityToSystems(Entity entity);
 };
 
 template <typename TComp>
