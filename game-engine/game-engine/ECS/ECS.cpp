@@ -41,6 +41,7 @@ Entity ComponentManager::CreateEntity() {
 	id = numEntities++;
 
 	Entity entity(id);
+	entity.compManager = this;
 	entitiesToAdd.insert(entity);
 
 	if (id >= entitySignatures.size()) {

@@ -17,8 +17,9 @@ Game::~Game() {
 
 void Game::Setup() {
 	Entity test = compManager->CreateEntity();
-	compManager->AddComponent<TransformComponent>(test, glm::vec2(20.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
-	compManager->AddComponent<RigidBodyComponent>(test, glm::vec2(0.0, 0.0));
+	test.AddComponent<TransformComponent>(glm::vec2(20.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
+	test.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
+	test.RemoveComponent<TransformComponent>();
 }
 
 void Game::Initalize() {
