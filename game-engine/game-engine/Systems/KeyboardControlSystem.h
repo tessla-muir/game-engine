@@ -27,42 +27,37 @@ class KeyboardControlSystem : public System {
 				const KeyboardControlledComponent keyboardcontrol = entity.GetComponent<KeyboardControlledComponent>();
 				RigidBodyComponent& rigidbody = entity.GetComponent<RigidBodyComponent>();
 
-				// Key Down Logic
-				if (event.isDown) {
-					if (event.key == SDLK_UP || event.key == SDLK_w) {
-						rigidbody.velocity.y = keyboardcontrol.upVelocity.y;
-					}
-					else if (event.key == SDLK_DOWN || event.key == SDLK_s) {
-						rigidbody.velocity.y = keyboardcontrol.downVelocity.y;
-					}
-					else if (event.key == SDLK_LEFT || event.key == SDLK_a) {
-						rigidbody.velocity.x = keyboardcontrol.leftVelocity.x;
-					}
-					else if (event.key == SDLK_RIGHT || event.key == SDLK_d) {
-						rigidbody.velocity.x = keyboardcontrol.rightVelocity.x;
-					}
-				}
-				// Key Up Logic
-				else {
-					if (event.key == SDLK_UP || event.key == SDLK_w) {
-						rigidbody.velocity.y = 0;
-					}
-					else if (event.key == SDLK_DOWN || event.key == SDLK_s) {
-						rigidbody.velocity.y = 0;
-					}
-					else if (event.key == SDLK_LEFT || event.key == SDLK_a) {
-						rigidbody.velocity.x = 0;
-					}
-					else if (event.key == SDLK_RIGHT || event.key == SDLK_d) {
-						rigidbody.velocity.x = 0;
-					}
-				}
+                // Key Down Logic
+                if (event.isDown) {
+                    if (keyboardcontrol.allowVerticalMovement) {
+                        if (event.key == SDLK_UP || event.key == SDLK_w) {
+                            rigidbody.velocity.y = keyboardcontrol.upVelocity.y;
+                        }
+                        else if (event.key == SDLK_DOWN || event.key == SDLK_s) {
+                            rigidbody.velocity.y = keyboardcontrol.downVelocity.y;
+                        }
+                    }
+
+                    if (keyboardcontrol.allowHorizontalMovement) {
+                        if (event.key == SDLK_LEFT || event.key == SDLK_a) {
+                            rigidbody.velocity.x = keyboardcontrol.leftVelocity.x;
+                        }
+                        else if (event.key == SDLK_RIGHT || event.key == SDLK_d) {
+                            rigidbody.velocity.x = keyboardcontrol.rightVelocity.x;
+                        }
+                    }
+                }
+                // Key Up Logic
+                else {
+                    if (keyboardcontrol.allowVerticalMovement && (event.key == SDLK_UP || event.key == SDLK_DOWN || event.key == SDLK_w || event.key == SDLK_s)) {
+                        rigidbody.velocity.y = 0;
+                    }
+                    if (keyboardcontrol.allowHorizontalMovement && (event.key == SDLK_LEFT || event.key == SDLK_RIGHT || event.key == SDLK_a || event.key == SDLK_d)) {
+                        rigidbody.velocity.x = 0;
+                    }
+                }
 				
 			}
-		}
-
-		void Update() {
-			
 		}
 };
 
