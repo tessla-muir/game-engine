@@ -8,6 +8,7 @@
 #include "./Components/BoxColliderComponent.h"
 #include "./Components/SpriteComponent.h"
 #include "./Components/AnimationComponent.h"
+#include "./Components/KeyboardControlledComponent.h"
 #include "./Systems/MovementSystem.h"
 #include "./Systems/KeyboardControlSystem.h"
 #include "./Systems/CollisionSystem.h"
@@ -48,14 +49,14 @@ void Game::Setup() {
 	test.AddComponent<TransformComponent>(glm::vec2(400.0, 400.0), glm::vec2(1.0, 1.0), 0.0);
 	test.AddComponent<SpriteComponent>("invader2", 110, 100);
 	test.AddComponent<AnimationComponent>(2, 1, true);
-	test.AddComponent<RigidBodyComponent>(glm::vec2(-1, -1));
+	test.AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
 	test.AddComponent<BoxColliderComponent>(110, 100);
+	test.AddComponent<KeyboardControlledComponent>(1);
 
 	Entity test2 = compManager->CreateEntity();
 	test2.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
 	test2.AddComponent<SpriteComponent>("invader1", 100, 100);
 	test2.AddComponent<AnimationComponent>(2, 1, true);
-	test2.AddComponent<RigidBodyComponent>(glm::vec2(1, 1));
 	test2.AddComponent<BoxColliderComponent>(100, 100);
 }
 
@@ -119,7 +120,7 @@ void Game::ProcessInput() {
 				isRunning = false;
 				break;
 			}
-			if (event.key.keysym.sym == SDLK_d) {
+			if (event.key.keysym.sym == SDLK_p) {
 				isDebugging = !isDebugging;
 			}
 			eventBus->DispatchEvent<KeyPressedEvent>(event.key.keysym.sym);
