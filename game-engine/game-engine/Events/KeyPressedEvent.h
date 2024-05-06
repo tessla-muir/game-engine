@@ -8,9 +8,11 @@
 class KeyPressedEvent : public Event {
 	public:
 		SDL_Keycode key;
+		bool isDown = false;
 
-		KeyPressedEvent(SDL_Keycode key) {
+		KeyPressedEvent(SDL_Keycode key, bool isDown) {
 			this->key = key;
+			this->isDown = isDown;
 		}
 };
 

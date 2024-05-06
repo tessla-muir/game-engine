@@ -27,18 +27,37 @@ class KeyboardControlSystem : public System {
 				const KeyboardControlledComponent keyboardcontrol = entity.GetComponent<KeyboardControlledComponent>();
 				RigidBodyComponent& rigidbody = entity.GetComponent<RigidBodyComponent>();
 
-				if (event.key == SDLK_UP || event.key == SDLK_w) {
-					rigidbody.velocity = keyboardcontrol.upVelocity;
+				// Key Down Logic
+				if (event.isDown) {
+					if (event.key == SDLK_UP || event.key == SDLK_w) {
+						rigidbody.velocity.y = keyboardcontrol.upVelocity.y;
+					}
+					else if (event.key == SDLK_DOWN || event.key == SDLK_s) {
+						rigidbody.velocity.y = keyboardcontrol.downVelocity.y;
+					}
+					else if (event.key == SDLK_LEFT || event.key == SDLK_a) {
+						rigidbody.velocity.x = keyboardcontrol.leftVelocity.x;
+					}
+					else if (event.key == SDLK_RIGHT || event.key == SDLK_d) {
+						rigidbody.velocity.x = keyboardcontrol.rightVelocity.x;
+					}
 				}
-				else if (event.key == SDLK_DOWN || event.key == SDLK_s) {
-					rigidbody.velocity = keyboardcontrol.downVelocity;
+				// Key Up Logic
+				else {
+					if (event.key == SDLK_UP || event.key == SDLK_w) {
+						rigidbody.velocity.y = 0;
+					}
+					else if (event.key == SDLK_DOWN || event.key == SDLK_s) {
+						rigidbody.velocity.y = 0;
+					}
+					else if (event.key == SDLK_LEFT || event.key == SDLK_a) {
+						rigidbody.velocity.x = 0;
+					}
+					else if (event.key == SDLK_RIGHT || event.key == SDLK_d) {
+						rigidbody.velocity.x = 0;
+					}
 				}
-				if (event.key == SDLK_LEFT || event.key == SDLK_a) {
-					rigidbody.velocity = keyboardcontrol.leftVelocity;
-				}
-				else if (event.key == SDLK_RIGHT || event.key == SDLK_d) {
-					rigidbody.velocity = keyboardcontrol.rightVelocity;
-				}
+				
 			}
 		}
 

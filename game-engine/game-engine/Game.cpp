@@ -2,7 +2,6 @@
 #include "./Logger/Logger.h"
 #include "./ECS/ECS.h"
 #include <SDL.h>
-#include <iostream>
 #include "./Components/TransformComponent.h"
 #include "./Components/RigidbodyComponent.h"
 #include "./Components/BoxColliderComponent.h"
@@ -51,7 +50,7 @@ void Game::Setup() {
 	test.AddComponent<AnimationComponent>(2, 1, true);
 	test.AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
 	test.AddComponent<BoxColliderComponent>(110, 100);
-	test.AddComponent<KeyboardControlledComponent>(1);
+	test.AddComponent<KeyboardControlledComponent>(200);
 
 	Entity test2 = compManager->CreateEntity();
 	test2.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
@@ -123,19 +122,25 @@ void Game::ProcessInput() {
 			if (event.key.keysym.sym == SDLK_p) {
 				isDebugging = !isDebugging;
 			}
-			eventBus->DispatchEvent<KeyPressedEvent>(event.key.keysym.sym);
+			eventBus->DispatchEvent<KeyPressedEvent>(event.key.keysym.sym, true);
 			break;
+		}
+		case SDL_KEYUP: {
+			eventBus->DispatchEvent<KeyPressedEvent>(event.key.keysym.sym, false);
 		}
 	}
 }
 
 void Game::Update() {
-	int waitTime = FRAME_MILISECS - (SDL_GetTicks() - prevFrameMilisecs);
-	if (waitTime > 0 && waitTime <= FRAME_MILISECS) {
-		SDL_Delay(waitTime);
-	}
+	// Calculate the time elapsed since the last frame
+	Uint32 currentTicks = SDL_GetTicks();
+	double deltaTime = (currentTicks - prevFrameMilisecs) / 1000.0;
 
-	double deltaTime = (SDL_GetTicks() - prevFrameMilisecs) / 1000.0;
+	// Update prevFrameMilisecs for the next frame
+	prevFrameMilisecs = currentTicks;
+
+	// Cap deltaTime to avoid large jumps in case of a long frame
+	deltaTime = (deltaTime < 30) ? deltaTime : 30;
 
 	// System Listeners
 	// Suboptimal to listen each frame
