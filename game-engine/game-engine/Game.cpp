@@ -5,8 +5,7 @@
 #include <iostream>
 #include "./Components/TransformComponent.h"
 #include "./Components/RigidbodyComponent.h"
-
-
+#include "./Systems/MovementSystem.h"
 
 Game::Game() {
 	isRunning = false;
@@ -18,13 +17,14 @@ Game::~Game() {
 }
 
 void Game::Setup() {
+	// Add systems needed for the game
+	compManager->AddSystem<MovementSystem>();
+
 	Entity test = compManager->CreateEntity();
 	test.AddComponent<TransformComponent>(glm::vec2(20.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
-	test.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
-	test.RemoveComponent<TransformComponent>();
+	test.AddComponent<RigidBodyComponent>(glm::vec2(2.0, 0.0));
 
 	Entity test2 = compManager->CreateEntity();
-	compManager->RemoveEntity(test);
 }
 
 void Game::Initalize() {
@@ -96,6 +96,11 @@ void Game::Update() {
 	if (waitTime > 0 && waitTime <= FRAME_MILISECS) {
 		SDL_Delay(waitTime);
 	}
+
+	double deltaTime = (SDL_GetTicks() - prevFrameMilisecs) / 1000.0;
+
+	// Update systems
+	compManager->GetSystem<MovementSystem>().Update(deltaTime);
 
 	compManager->Update();
 }

@@ -153,6 +153,7 @@
     <ClInclude Include="ECS\ECS.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Logger\Logger.h" />
+    <ClInclude Include="Systems\MovementSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
