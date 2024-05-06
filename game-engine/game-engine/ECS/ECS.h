@@ -35,7 +35,9 @@ class Entity {
 		int id;
 
 	public:
+		Entity() = default;
 		Entity(int id) : id(id) {};
+		Entity(const Entity& entity) = default;
 		int GetId() const;
 		ComponentManager* compManager;
 		void Destroy();

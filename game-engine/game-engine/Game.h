@@ -3,6 +3,7 @@
 
 #include "./ECS/ECS.h"
 #include "./AssetStore/AssetStore.h"
+#include "./Events/EventBus/EventBus.h"
 #include <SDL.h>
 
 const int FPS = 60;
@@ -17,6 +18,7 @@ private:
 	SDL_Renderer* renderer;
 	std::unique_ptr<ComponentManager> compManager;
 	std::unique_ptr<AssetStore> assetStore;
+	std::unique_ptr<EventBus> eventBus;
 
 	public:
 		Game();

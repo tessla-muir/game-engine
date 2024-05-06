@@ -2,23 +2,26 @@
 #include "./Logger/Logger.h"
 #include "./ECS/ECS.h"
 #include <SDL.h>
-#include <iostream>
 #include "./Components/TransformComponent.h"
 #include "./Components/RigidbodyComponent.h"
 #include "./Components/BoxColliderComponent.h"
 #include "./Components/SpriteComponent.h"
 #include "./Components/AnimationComponent.h"
+#include "./Components/KeyboardControlledComponent.h"
 #include "./Systems/MovementSystem.h"
+#include "./Systems/KeyboardControlSystem.h"
 #include "./Systems/CollisionSystem.h"
 #include "./Systems/CollisionDebugSystem.h"
 #include "./Systems/RenderSystem.h"
 #include "./Systems/AnimationSystem.h"
+#include "./Systems/DamageSystem.h"
 
 Game::Game() {
 	isRunning = false;
 	isDebugging = false;
 	compManager = std::make_unique<ComponentManager>();
 	assetStore = std::make_unique<AssetStore>();
+	eventBus = std::make_unique<EventBus>();
 }
 
 Game::~Game() {
@@ -28,10 +31,12 @@ Game::~Game() {
 void Game::Setup() {
 	// Add systems needed for the game
 	compManager->AddSystem<MovementSystem>();
+	compManager->AddSystem<KeyboardControlSystem>();
 	compManager->AddSystem<RenderSystem>();
 	compManager->AddSystem<AnimationSystem>();
 	compManager->AddSystem<CollisionSystem>();
 	compManager->AddSystem<CollisionDebugSystem>();
+	compManager->AddSystem<DamageSystem>();
 
 	// Add Assets
 	assetStore->AddTexture(renderer, "invader1", "./Assets/Images/invader1.png");
@@ -43,14 +48,14 @@ void Game::Setup() {
 	test.AddComponent<TransformComponent>(glm::vec2(400.0, 400.0), glm::vec2(1.0, 1.0), 0.0);
 	test.AddComponent<SpriteComponent>("invader2", 110, 100);
 	test.AddComponent<AnimationComponent>(2, 1, true);
-	test.AddComponent<RigidBodyComponent>(glm::vec2(-1, -1));
+	test.AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
 	test.AddComponent<BoxColliderComponent>(110, 100);
+	test.AddComponent<KeyboardControlledComponent>(200);
 
 	Entity test2 = compManager->CreateEntity();
 	test2.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
 	test2.AddComponent<SpriteComponent>("invader1", 100, 100);
 	test2.AddComponent<AnimationComponent>(2, 1, true);
-	test2.AddComponent<RigidBodyComponent>(glm::vec2(1, 1));
 	test2.AddComponent<BoxColliderComponent>(100, 100);
 }
 
@@ -114,25 +119,41 @@ void Game::ProcessInput() {
 				isRunning = false;
 				break;
 			}
-			if (event.key.keysym.sym == SDLK_d) {
+			if (event.key.keysym.sym == SDLK_p) {
 				isDebugging = !isDebugging;
 			}
+			eventBus->DispatchEvent<KeyPressedEvent>(event.key.keysym.sym, true);
+			break;
+		}
+		case SDL_KEYUP: {
+			eventBus->DispatchEvent<KeyPressedEvent>(event.key.keysym.sym, false);
 		}
 	}
 }
 
 void Game::Update() {
-	int waitTime = FRAME_MILISECS - (SDL_GetTicks() - prevFrameMilisecs);
-	if (waitTime > 0 && waitTime <= FRAME_MILISECS) {
-		SDL_Delay(waitTime);
-	}
+	// Calculate the time elapsed since the last frame
+	Uint32 currentTicks = SDL_GetTicks();
+	double deltaTime = (currentTicks - prevFrameMilisecs) / 1000.0;
 
-	double deltaTime = (SDL_GetTicks() - prevFrameMilisecs) / 1000.0;
+	// Update prevFrameMilisecs for the next frame
+	prevFrameMilisecs = currentTicks;
+
+	// Cap deltaTime to avoid large jumps in case of a long frame
+	deltaTime = (deltaTime < 30) ? deltaTime : 30;
+
+	// System Listeners
+	// Suboptimal to listen each frame
+	eventBus->Reset(); // Reset Listeners
+	compManager->GetSystem<DamageSystem>().ListenToEvents(eventBus); // Establish listeners
+	compManager->GetSystem<KeyboardControlSystem>().ListenToEvents(eventBus);
 
 	// Update systems
 	compManager->GetSystem<MovementSystem>().Update(deltaTime);
 	compManager->GetSystem<AnimationSystem>().Update();
-	compManager->GetSystem<CollisionSystem>().Update();
+	compManager->GetSystem<CollisionSystem>().Update(eventBus);
+	compManager->GetSystem<DamageSystem>().Update();
+	//compManager->GetSystem<KeyboardControlSystem>().Update();
 
 	// Update component manager
 	compManager->Update();

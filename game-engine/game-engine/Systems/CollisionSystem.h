@@ -4,6 +4,8 @@
 #include "../ECS/ECS.h"
 #include "../Components/BoxColliderComponent.h"
 #include "../Components/TransformComponent.h"
+#include "../Events/EventBus/EventBus.h"
+#include "../Events/CollisionEvent.h"
 #include <glm.hpp>
 
 class CollisionSystem : public System {
@@ -13,7 +15,7 @@ class CollisionSystem : public System {
 			RequireComponent<BoxColliderComponent>();
 		}
 
-		void Update() {
+		void Update(std::unique_ptr<EventBus>& eventBus) {
 			auto entities = GetEntities();
 
 			// Go through all the relevant entities
@@ -43,6 +45,7 @@ class CollisionSystem : public System {
 					)) {
 						// Collision!
 						// Logger::Debug("Entity " + std::to_string(one.GetId()) + " & Entity " + std::to_string(two.GetId()) + " collided!");
+						eventBus->DispatchEvent<CollisionEvent>(one, two);
 					}
 				}
 			}
