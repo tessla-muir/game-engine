@@ -77,6 +77,12 @@
     <ClInclude Include="Systems\CollisionDebugSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Events\CollisionEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\EventBus\EventBus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Images\invader2b.png">
