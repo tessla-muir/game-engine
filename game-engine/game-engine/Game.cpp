@@ -12,6 +12,7 @@
 Game::Game() {
 	isRunning = false;
 	compManager = std::make_unique<ComponentManager>();
+	assetStore = std::make_unique<AssetStore>();
 }
 
 Game::~Game() {
@@ -23,10 +24,19 @@ void Game::Setup() {
 	compManager->AddSystem<MovementSystem>();
 	compManager->AddSystem<RenderSystem>();
 
+	// Add Assets
+	assetStore->AddTexture(renderer, "invader1a", "./Assets/Images/invader1a.png");
+	assetStore->AddTexture(renderer, "invader1b", "./Assets/Images/invader1b.png");
+
 	Entity test = compManager->CreateEntity();
-	test.AddComponent<TransformComponent>(glm::vec2(20.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
+	test.AddComponent<TransformComponent>(glm::vec2(2.0, 2.0), glm::vec2(1.0, 1.0), 0.0);
 	test.AddComponent<RigidBodyComponent>(glm::vec2(1.0, 1.0));
-	test.AddComponent<SpriteComponent>(20, 20);
+	test.AddComponent<SpriteComponent>("invader1a", 20, 20);
+
+	Entity test2 = compManager->CreateEntity();
+	test2.AddComponent<TransformComponent>(glm::vec2(20.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
+	test2.AddComponent<RigidBodyComponent>(glm::vec2(1.5, 0.2));
+	test2.AddComponent<SpriteComponent>("invader1b", 30, 30);
 }
 
 void Game::Initalize() {

@@ -94,7 +94,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -142,12 +142,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AssetStore\AssetStore.cpp" />
     <ClCompile Include="ECS\ECS.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Logger\Logger.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AssetStore\AssetStore.h" />
     <ClInclude Include="Components\RigidbodyComponent.h" />
     <ClInclude Include="Components\SpriteComponent.h" />
     <ClInclude Include="Components\TransformComponent.h" />
@@ -156,6 +158,12 @@
     <ClInclude Include="Logger\Logger.h" />
     <ClInclude Include="Systems\MovementSystem.h" />
     <ClInclude Include="Systems\RenderSystem.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\Images\invader1a.png" />
+    <Image Include="Assets\Images\invader1b.png" />
+    <Image Include="Assets\Images\invader2a.png" />
+    <Image Include="Assets\Images\invader2b.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

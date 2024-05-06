@@ -207,7 +207,6 @@ void ComponentManager::RemoveComponent(Entity entity) {
 	Logger::Log("Component " + std::to_string(componentId) + " removed from entity " + std::to_string(entityId));
 }
 
-
 template <typename TComp>
 bool Entity::HasComponent() const {
 	return compManager->HasComponent(*this);
