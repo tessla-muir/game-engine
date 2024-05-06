@@ -138,12 +138,6 @@ class ComponentManager {
 };
 
 template <typename TComp>
-void System::RequireComponent() {
-	const auto componentId = Component<TComp>::GetId();
-	signature._Set_unchecked(componentId);
-}
-
-template <typename TComp>
 bool ComponentManager::HasComponent(Entity entity) const {
 	// Get component and entity IDs
 	const int componentId = Component<TComp>::GetId();
@@ -155,7 +149,7 @@ bool ComponentManager::HasComponent(Entity entity) const {
 template <typename TComp> 
 TComp& ComponentManager::GetComponent(Entity entity) const {
 	// Get component and entity IDs
-	const int componentId = Component<TComp>.GetId();
+	const int componentId = Component<TComp>::GetId();
 	const int entityId = entity.GetId();
 
 	std::shared_ptr<Pool<TComp>> pool = std::static_pointer_cast<Pool<TComp>>(componentPools[componentId]);
@@ -213,7 +207,6 @@ void ComponentManager::RemoveComponent(Entity entity) {
 	Logger::Log("Component " + std::to_string(componentId) + " removed from entity " + std::to_string(entityId));
 }
 
-
 template <typename TComp>
 bool Entity::HasComponent() const {
 	return compManager->HasComponent(*this);
@@ -232,6 +225,12 @@ void Entity::AddComponent(TArgs&& ...args) {
 template <typename TComp> 
 void Entity::RemoveComponent() {
 	compManager->RemoveComponent<TComp>(*this);
+}
+
+template <typename TComp>
+void System::RequireComponent() {
+	int componentId = Component<TComp>::GetId();
+	signature.set(componentId);
 }
 
 template <typename TSys> 

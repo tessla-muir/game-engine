@@ -28,7 +28,18 @@ void Logger::Log(const std::string& msg) {
 	messages.push_back(log);
 
 	// Print to console
-	std::cout << "\033[32m" << log.message << "\033[0m" << std::endl;
+	std::cout << log.message << std::endl;
+}
+
+void Logger::Debug(const std::string& msg) {
+	// Create and add log entry
+	LogEntry log;
+	log.type = LOG_INFO;
+	log.message = "DEBUG [" + GetTimeString() + "] " + msg;
+	messages.push_back(log);
+
+	// Print to console
+	std::cout << "\033[36m" << log.message << "\033[0m" << std::endl;
 }
 
 void Logger::Warn(const std::string& msg) {

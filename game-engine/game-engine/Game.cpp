@@ -5,12 +5,20 @@
 #include <iostream>
 #include "./Components/TransformComponent.h"
 #include "./Components/RigidbodyComponent.h"
-
-
+#include "./Components/BoxColliderComponent.h"
+#include "./Components/SpriteComponent.h"
+#include "./Components/AnimationComponent.h"
+#include "./Systems/MovementSystem.h"
+#include "./Systems/CollisionSystem.h"
+#include "./Systems/CollisionDebugSystem.h"
+#include "./Systems/RenderSystem.h"
+#include "./Systems/AnimationSystem.h"
 
 Game::Game() {
 	isRunning = false;
+	isDebugging = false;
 	compManager = std::make_unique<ComponentManager>();
+	assetStore = std::make_unique<AssetStore>();
 }
 
 Game::~Game() {
@@ -18,13 +26,32 @@ Game::~Game() {
 }
 
 void Game::Setup() {
+	// Add systems needed for the game
+	compManager->AddSystem<MovementSystem>();
+	compManager->AddSystem<RenderSystem>();
+	compManager->AddSystem<AnimationSystem>();
+	compManager->AddSystem<CollisionSystem>();
+	compManager->AddSystem<CollisionDebugSystem>();
+
+	// Add Assets
+	assetStore->AddTexture(renderer, "invader1", "./Assets/Images/invader1.png");
+	assetStore->AddTexture(renderer, "invader1a", "./Assets/Images/invader1a.png");
+	assetStore->AddTexture(renderer, "invader1b", "./Assets/Images/invader1b.png");
+	assetStore->AddTexture(renderer, "invader2", "./Assets/Images/invader2.png");
+
 	Entity test = compManager->CreateEntity();
-	test.AddComponent<TransformComponent>(glm::vec2(20.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
-	test.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
-	test.RemoveComponent<TransformComponent>();
+	test.AddComponent<TransformComponent>(glm::vec2(400.0, 400.0), glm::vec2(1.0, 1.0), 0.0);
+	test.AddComponent<SpriteComponent>("invader2", 110, 100);
+	test.AddComponent<AnimationComponent>(2, 1, true);
+	test.AddComponent<RigidBodyComponent>(glm::vec2(-1, -1));
+	test.AddComponent<BoxColliderComponent>(110, 100);
 
 	Entity test2 = compManager->CreateEntity();
-	compManager->RemoveEntity(test);
+	test2.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
+	test2.AddComponent<SpriteComponent>("invader1", 100, 100);
+	test2.AddComponent<AnimationComponent>(2, 1, true);
+	test2.AddComponent<RigidBodyComponent>(glm::vec2(1, 1));
+	test2.AddComponent<BoxColliderComponent>(100, 100);
 }
 
 void Game::Initalize() {
@@ -87,6 +114,9 @@ void Game::ProcessInput() {
 				isRunning = false;
 				break;
 			}
+			if (event.key.keysym.sym == SDLK_d) {
+				isDebugging = !isDebugging;
+			}
 		}
 	}
 }
@@ -97,6 +127,14 @@ void Game::Update() {
 		SDL_Delay(waitTime);
 	}
 
+	double deltaTime = (SDL_GetTicks() - prevFrameMilisecs) / 1000.0;
+
+	// Update systems
+	compManager->GetSystem<MovementSystem>().Update(deltaTime);
+	compManager->GetSystem<AnimationSystem>().Update();
+	compManager->GetSystem<CollisionSystem>().Update();
+
+	// Update component manager
 	compManager->Update();
 }
 
@@ -105,6 +143,8 @@ void Game::Render() {
 	SDL_RenderClear(renderer);
 
 	// Render objects
+	compManager->GetSystem<RenderSystem>().Update(renderer, assetStore);
+	if (isDebugging) compManager->GetSystem<CollisionDebugSystem>().Update(renderer);
 
 	SDL_RenderPresent(renderer);
 }

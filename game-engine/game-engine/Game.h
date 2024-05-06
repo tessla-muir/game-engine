@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "./ECS/ECS.h"
+#include "./AssetStore/AssetStore.h"
 #include <SDL.h>
 
 const int FPS = 60;
@@ -10,10 +11,12 @@ const int FRAME_MILISECS = (1000 / FPS);
 class Game {
 private:
 	bool isRunning;
+	bool isDebugging;
 	int prevFrameMilisecs = 0;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	std::unique_ptr<ComponentManager> compManager;
+	std::unique_ptr<AssetStore> assetStore;
 
 	public:
 		Game();
