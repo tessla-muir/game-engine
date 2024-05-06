@@ -6,8 +6,10 @@
 #include "./Components/TransformComponent.h"
 #include "./Components/RigidbodyComponent.h"
 #include "./Components/SpriteComponent.h"
+#include "./Components/AnimationComponent.h"
 #include "./Systems/MovementSystem.h"
 #include "./Systems/RenderSystem.h"
+#include "./Systems/AnimationSystem.h"
 
 Game::Game() {
 	isRunning = false;
@@ -23,20 +25,23 @@ void Game::Setup() {
 	// Add systems needed for the game
 	compManager->AddSystem<MovementSystem>();
 	compManager->AddSystem<RenderSystem>();
+	compManager->AddSystem<AnimationSystem>();
 
 	// Add Assets
+	assetStore->AddTexture(renderer, "invader1", "./Assets/Images/invader1.png");
 	assetStore->AddTexture(renderer, "invader1a", "./Assets/Images/invader1a.png");
 	assetStore->AddTexture(renderer, "invader1b", "./Assets/Images/invader1b.png");
+	assetStore->AddTexture(renderer, "invader2", "./Assets/Images/invader2.png");
 
 	Entity test = compManager->CreateEntity();
-	test.AddComponent<TransformComponent>(glm::vec2(2.0, 2.0), glm::vec2(1.0, 1.0), 0.0);
-	test.AddComponent<RigidBodyComponent>(glm::vec2(1.0, 1.0));
-	test.AddComponent<SpriteComponent>("invader1a");
+	test.AddComponent<TransformComponent>(glm::vec2(200.0, 400.0), glm::vec2(1.0, 1.0), 0.0);
+	test.AddComponent<SpriteComponent>("invader2", 110, 100);
+	test.AddComponent<AnimationComponent>(2, 1, true);
 
 	Entity test2 = compManager->CreateEntity();
-	test2.AddComponent<TransformComponent>(glm::vec2(20.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
-	test2.AddComponent<RigidBodyComponent>(glm::vec2(1.5, 0.2));
-	test2.AddComponent<SpriteComponent>("invader1b");
+	test2.AddComponent<TransformComponent>(glm::vec2(400.0, 200.0), glm::vec2(0.25, 0.25), 0.0);
+	test2.AddComponent<SpriteComponent>("invader1", 100, 100);
+	test2.AddComponent<AnimationComponent>(2, 1, true);
 }
 
 void Game::Initalize() {
@@ -113,6 +118,7 @@ void Game::Update() {
 
 	// Update systems
 	compManager->GetSystem<MovementSystem>().Update(deltaTime);
+	compManager->GetSystem<AnimationSystem>().Update();
 
 	compManager->Update();
 }

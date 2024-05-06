@@ -150,12 +150,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetStore\AssetStore.h" />
+    <ClInclude Include="Components\AnimationComponent.h" />
     <ClInclude Include="Components\RigidbodyComponent.h" />
     <ClInclude Include="Components\SpriteComponent.h" />
     <ClInclude Include="Components\TransformComponent.h" />
     <ClInclude Include="ECS\ECS.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Logger\Logger.h" />
+    <ClInclude Include="Systems\AnimationSystem.h" />
     <ClInclude Include="Systems\MovementSystem.h" />
     <ClInclude Include="Systems\RenderSystem.h" />
   </ItemGroup>

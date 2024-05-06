@@ -62,6 +62,12 @@
     <ClInclude Include="AssetStore\AssetStore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Components\AnimationComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\AnimationSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Images\invader2b.png">

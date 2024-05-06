@@ -22,12 +22,13 @@ class RenderSystem : public System {
 
 				// Create the source rect (sprite)
 				SDL_Rect srcRect = {
-					0,
-					0,
+					sprite.srcRect.x,
+					sprite.srcRect.y,
 					sprite.width,
 					sprite.height
 				};
-				SDL_QueryTexture(assetStore->GetTexture(sprite.assetId), NULL, NULL, &srcRect.w, &srcRect.h);
+				if (sprite.width == 0 && sprite.height == 0)
+					SDL_QueryTexture(assetStore->GetTexture(sprite.assetId), NULL, NULL, &srcRect.w, &srcRect.h);
 
 				// Create the destination rect (what gets rendered)
 				SDL_Rect destRect = {
