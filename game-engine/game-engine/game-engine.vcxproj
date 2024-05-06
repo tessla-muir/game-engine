@@ -159,12 +159,14 @@
     <ClInclude Include="Events\CollisionEvent.h" />
     <ClInclude Include="Events\EventBus\Event.h" />
     <ClInclude Include="Events\EventBus\EventBus.h" />
+    <ClInclude Include="Events\KeyPressedEvent.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Logger\Logger.h" />
     <ClInclude Include="Systems\AnimationSystem.h" />
     <ClInclude Include="Systems\CollisionDebugSystem.h" />
     <ClInclude Include="Systems\CollisionSystem.h" />
     <ClInclude Include="Systems\DamageSystem.h" />
+    <ClInclude Include="Systems\KeyboardControlSystem.h" />
     <ClInclude Include="Systems\MovementSystem.h" />
     <ClInclude Include="Systems\RenderSystem.h" />
   </ItemGroup>

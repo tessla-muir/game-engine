@@ -9,6 +9,7 @@
 #include "./Components/SpriteComponent.h"
 #include "./Components/AnimationComponent.h"
 #include "./Systems/MovementSystem.h"
+#include "./Systems/KeyboardControlSystem.h"
 #include "./Systems/CollisionSystem.h"
 #include "./Systems/CollisionDebugSystem.h"
 #include "./Systems/RenderSystem.h"
@@ -30,6 +31,7 @@ Game::~Game() {
 void Game::Setup() {
 	// Add systems needed for the game
 	compManager->AddSystem<MovementSystem>();
+	compManager->AddSystem<KeyboardControlSystem>();
 	compManager->AddSystem<RenderSystem>();
 	compManager->AddSystem<AnimationSystem>();
 	compManager->AddSystem<CollisionSystem>();
@@ -120,6 +122,8 @@ void Game::ProcessInput() {
 			if (event.key.keysym.sym == SDLK_d) {
 				isDebugging = !isDebugging;
 			}
+			eventBus->DispatchEvent<KeyPressedEvent>(event.key.keysym.sym);
+			break;
 		}
 	}
 }
@@ -136,12 +140,14 @@ void Game::Update() {
 	// Suboptimal to listen each frame
 	eventBus->Reset(); // Reset Listeners
 	compManager->GetSystem<DamageSystem>().ListenToEvents(eventBus); // Establish listeners
+	compManager->GetSystem<KeyboardControlSystem>().ListenToEvents(eventBus);
 
 	// Update systems
 	compManager->GetSystem<MovementSystem>().Update(deltaTime);
 	compManager->GetSystem<AnimationSystem>().Update();
 	compManager->GetSystem<CollisionSystem>().Update(eventBus);
 	compManager->GetSystem<DamageSystem>().Update();
+	//compManager->GetSystem<KeyboardControlSystem>().Update();
 
 	// Update component manager
 	compManager->Update();
