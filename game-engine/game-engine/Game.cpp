@@ -13,12 +13,14 @@
 #include "./Systems/CollisionDebugSystem.h"
 #include "./Systems/RenderSystem.h"
 #include "./Systems/AnimationSystem.h"
+#include "./Systems/DamageSystem.h"
 
 Game::Game() {
 	isRunning = false;
 	isDebugging = false;
 	compManager = std::make_unique<ComponentManager>();
 	assetStore = std::make_unique<AssetStore>();
+	eventBus = std::make_unique<EventBus>();
 }
 
 Game::~Game() {
@@ -32,6 +34,7 @@ void Game::Setup() {
 	compManager->AddSystem<AnimationSystem>();
 	compManager->AddSystem<CollisionSystem>();
 	compManager->AddSystem<CollisionDebugSystem>();
+	compManager->AddSystem<DamageSystem>();
 
 	// Add Assets
 	assetStore->AddTexture(renderer, "invader1", "./Assets/Images/invader1.png");
@@ -129,10 +132,16 @@ void Game::Update() {
 
 	double deltaTime = (SDL_GetTicks() - prevFrameMilisecs) / 1000.0;
 
+	// System Listeners
+	// Suboptimal to listen each frame
+	eventBus->Reset(); // Reset Listeners
+	compManager->GetSystem<DamageSystem>().ListenToEvents(eventBus); // Establish listeners
+
 	// Update systems
 	compManager->GetSystem<MovementSystem>().Update(deltaTime);
 	compManager->GetSystem<AnimationSystem>().Update();
-	compManager->GetSystem<CollisionSystem>().Update();
+	compManager->GetSystem<CollisionSystem>().Update(eventBus);
+	compManager->GetSystem<DamageSystem>().Update();
 
 	// Update component manager
 	compManager->Update();
