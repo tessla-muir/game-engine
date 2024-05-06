@@ -31,12 +31,12 @@ void Game::Setup() {
 	Entity test = compManager->CreateEntity();
 	test.AddComponent<TransformComponent>(glm::vec2(2.0, 2.0), glm::vec2(1.0, 1.0), 0.0);
 	test.AddComponent<RigidBodyComponent>(glm::vec2(1.0, 1.0));
-	test.AddComponent<SpriteComponent>("invader1a", 100, 100);
+	test.AddComponent<SpriteComponent>("invader1a");
 
 	Entity test2 = compManager->CreateEntity();
 	test2.AddComponent<TransformComponent>(glm::vec2(20.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
 	test2.AddComponent<RigidBodyComponent>(glm::vec2(1.5, 0.2));
-	test2.AddComponent<SpriteComponent>("invader1b", 100, 100);
+	test2.AddComponent<SpriteComponent>("invader1b");
 }
 
 void Game::Initalize() {

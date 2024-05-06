@@ -21,14 +21,27 @@ class RenderSystem : public System {
 				const SpriteComponent& sprite = entity.GetComponent<SpriteComponent>();
 
 				// Create the source rect (sprite)
-				SDL_Rect srcRect = sprite.srcRect;
+				SDL_Rect srcRect = {
+					0,
+					0,
+					sprite.width,
+					sprite.height
+				};
+				SDL_QueryTexture(assetStore->GetTexture(sprite.assetId), NULL, NULL, &srcRect.w, &srcRect.h);
 
+				// Create the destination rect (what gets rendered)
 				SDL_Rect destRect = {
 					static_cast<int>(transform.position.x),
 					static_cast<int>(transform.position.y),
 					static_cast<int>(sprite.width * transform.scale.x),
 					static_cast<int>(sprite.width * transform.scale.y)
 				};
+				// Default to sprite width & height if not given
+				if (sprite.width == 0 && sprite.height == 0)
+				{
+					destRect.w = srcRect.w * transform.scale.x;
+					destRect.h = srcRect.h * transform.scale.y;
+				}
 
 				SDL_RenderCopyEx(
 					renderer,
