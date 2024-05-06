@@ -11,6 +11,7 @@ const int FRAME_MILISECS = (1000 / FPS);
 class Game {
 private:
 	bool isRunning;
+	bool isDebugging;
 	int prevFrameMilisecs = 0;
 	SDL_Window* window;
 	SDL_Renderer* renderer;

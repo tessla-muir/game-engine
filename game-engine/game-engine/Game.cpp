@@ -10,11 +10,13 @@
 #include "./Components/AnimationComponent.h"
 #include "./Systems/MovementSystem.h"
 #include "./Systems/CollisionSystem.h"
+#include "./Systems/CollisionDebugSystem.h"
 #include "./Systems/RenderSystem.h"
 #include "./Systems/AnimationSystem.h"
 
 Game::Game() {
 	isRunning = false;
+	isDebugging = false;
 	compManager = std::make_unique<ComponentManager>();
 	assetStore = std::make_unique<AssetStore>();
 }
@@ -29,6 +31,7 @@ void Game::Setup() {
 	compManager->AddSystem<RenderSystem>();
 	compManager->AddSystem<AnimationSystem>();
 	compManager->AddSystem<CollisionSystem>();
+	compManager->AddSystem<CollisionDebugSystem>();
 
 	// Add Assets
 	assetStore->AddTexture(renderer, "invader1", "./Assets/Images/invader1.png");
@@ -41,7 +44,7 @@ void Game::Setup() {
 	test.AddComponent<SpriteComponent>("invader2", 110, 100);
 	test.AddComponent<AnimationComponent>(2, 1, true);
 	test.AddComponent<RigidBodyComponent>(glm::vec2(-1, -1));
-	test.AddComponent<BoxColliderComponent>(100, 100);
+	test.AddComponent<BoxColliderComponent>(110, 100);
 
 	Entity test2 = compManager->CreateEntity();
 	test2.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
@@ -111,6 +114,9 @@ void Game::ProcessInput() {
 				isRunning = false;
 				break;
 			}
+			if (event.key.keysym.sym == SDLK_d) {
+				isDebugging = !isDebugging;
+			}
 		}
 	}
 }
@@ -128,6 +134,7 @@ void Game::Update() {
 	compManager->GetSystem<AnimationSystem>().Update();
 	compManager->GetSystem<CollisionSystem>().Update();
 
+	// Update component manager
 	compManager->Update();
 }
 
@@ -137,6 +144,7 @@ void Game::Render() {
 
 	// Render objects
 	compManager->GetSystem<RenderSystem>().Update(renderer, assetStore);
+	if (isDebugging) compManager->GetSystem<CollisionDebugSystem>().Update(renderer);
 
 	SDL_RenderPresent(renderer);
 }

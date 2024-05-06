@@ -42,7 +42,7 @@ class CollisionSystem : public System {
 						twoCollid.height
 					)) {
 						// Collision!
-						Logger::Debug("Entity " + std::to_string(one.GetId()) + " & Entity " + std::to_string(two.GetId()) + " collided!");
+						// Logger::Debug("Entity " + std::to_string(one.GetId()) + " & Entity " + std::to_string(two.GetId()) + " collided!");
 					}
 				}
 			}
