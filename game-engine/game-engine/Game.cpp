@@ -5,9 +5,11 @@
 #include <iostream>
 #include "./Components/TransformComponent.h"
 #include "./Components/RigidbodyComponent.h"
+#include "./Components/BoxColliderComponent.h"
 #include "./Components/SpriteComponent.h"
 #include "./Components/AnimationComponent.h"
 #include "./Systems/MovementSystem.h"
+#include "./Systems/CollisionSystem.h"
 #include "./Systems/RenderSystem.h"
 #include "./Systems/AnimationSystem.h"
 
@@ -26,6 +28,7 @@ void Game::Setup() {
 	compManager->AddSystem<MovementSystem>();
 	compManager->AddSystem<RenderSystem>();
 	compManager->AddSystem<AnimationSystem>();
+	compManager->AddSystem<CollisionSystem>();
 
 	// Add Assets
 	assetStore->AddTexture(renderer, "invader1", "./Assets/Images/invader1.png");
@@ -34,14 +37,18 @@ void Game::Setup() {
 	assetStore->AddTexture(renderer, "invader2", "./Assets/Images/invader2.png");
 
 	Entity test = compManager->CreateEntity();
-	test.AddComponent<TransformComponent>(glm::vec2(200.0, 400.0), glm::vec2(1.0, 1.0), 0.0);
+	test.AddComponent<TransformComponent>(glm::vec2(400.0, 400.0), glm::vec2(1.0, 1.0), 0.0);
 	test.AddComponent<SpriteComponent>("invader2", 110, 100);
 	test.AddComponent<AnimationComponent>(2, 1, true);
+	test.AddComponent<RigidBodyComponent>(glm::vec2(-1, -1));
+	test.AddComponent<BoxColliderComponent>(100, 100);
 
 	Entity test2 = compManager->CreateEntity();
-	test2.AddComponent<TransformComponent>(glm::vec2(400.0, 200.0), glm::vec2(0.25, 0.25), 0.0);
+	test2.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
 	test2.AddComponent<SpriteComponent>("invader1", 100, 100);
 	test2.AddComponent<AnimationComponent>(2, 1, true);
+	test2.AddComponent<RigidBodyComponent>(glm::vec2(1, 1));
+	test2.AddComponent<BoxColliderComponent>(100, 100);
 }
 
 void Game::Initalize() {
@@ -119,6 +126,7 @@ void Game::Update() {
 	// Update systems
 	compManager->GetSystem<MovementSystem>().Update(deltaTime);
 	compManager->GetSystem<AnimationSystem>().Update();
+	compManager->GetSystem<CollisionSystem>().Update();
 
 	compManager->Update();
 }
