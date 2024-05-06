@@ -149,11 +149,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\RigidbodyComponent.h" />
+    <ClInclude Include="Components\SpriteComponent.h" />
     <ClInclude Include="Components\TransformComponent.h" />
     <ClInclude Include="ECS\ECS.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Logger\Logger.h" />
     <ClInclude Include="Systems\MovementSystem.h" />
+    <ClInclude Include="Systems\RenderSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

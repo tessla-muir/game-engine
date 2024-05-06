@@ -5,7 +5,9 @@
 #include <iostream>
 #include "./Components/TransformComponent.h"
 #include "./Components/RigidbodyComponent.h"
+#include "./Components/SpriteComponent.h"
 #include "./Systems/MovementSystem.h"
+#include "./Systems/RenderSystem.h"
 
 Game::Game() {
 	isRunning = false;
@@ -19,12 +21,12 @@ Game::~Game() {
 void Game::Setup() {
 	// Add systems needed for the game
 	compManager->AddSystem<MovementSystem>();
+	compManager->AddSystem<RenderSystem>();
 
 	Entity test = compManager->CreateEntity();
 	test.AddComponent<TransformComponent>(glm::vec2(20.0, 20.0), glm::vec2(1.0, 1.0), 0.0);
-	test.AddComponent<RigidBodyComponent>(glm::vec2(2.0, 0.0));
-
-	Entity test2 = compManager->CreateEntity();
+	test.AddComponent<RigidBodyComponent>(glm::vec2(1.0, 1.0));
+	test.AddComponent<SpriteComponent>(20, 20);
 }
 
 void Game::Initalize() {
@@ -110,6 +112,7 @@ void Game::Render() {
 	SDL_RenderClear(renderer);
 
 	// Render objects
+	compManager->GetSystem<RenderSystem>().Update(renderer);
 
 	SDL_RenderPresent(renderer);
 }

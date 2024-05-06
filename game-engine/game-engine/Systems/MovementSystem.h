@@ -13,14 +13,13 @@ class MovementSystem : public System {
 		}
 
 		void Update(float deltaTime) {
+			// Find all the relevant entities
 			for (auto entity : GetEntities()) {
 				TransformComponent& transform = entity.GetComponent<TransformComponent>();
 				const RigidBodyComponent& rigidbody = entity.GetComponent<RigidBodyComponent>();
 
 				transform.position.x += rigidbody.velocity.x * deltaTime;
 				transform.position.y += rigidbody.velocity.y * deltaTime;
-
-				Logger::Log("Position is now: " + std::to_string(transform.position.x) + " , " + std::to_string(transform.position.y));
 			}
 		}
 };
