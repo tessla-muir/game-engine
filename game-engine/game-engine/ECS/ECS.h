@@ -140,6 +140,26 @@ class ComponentManager {
 };
 
 template <typename TComp>
+bool Entity::HasComponent() const {
+	return compManager->HasComponent<TComp>(*this);
+}
+
+template <typename TComp>
+TComp& Entity::GetComponent() const {
+	return compManager->GetComponent<TComp>(*this);
+}
+
+template <typename TComp, typename ...TArgs>
+void Entity::AddComponent(TArgs&& ...args) {
+	compManager->AddComponent<TComp>(*this, std::forward<TArgs>(args)...);
+}
+
+template <typename TComp>
+void Entity::RemoveComponent() {
+	compManager->RemoveComponent<TComp>(*this);
+}
+
+template <typename TComp>
 bool ComponentManager::HasComponent(Entity entity) const {
 	// Get component and entity IDs
 	const int componentId = Component<TComp>::GetId();
@@ -207,26 +227,6 @@ void ComponentManager::RemoveComponent(Entity entity) {
 	entitySignatures[entityId].set(componentId, false);
 
 	Logger::Log("Component " + std::to_string(componentId) + " removed from entity " + std::to_string(entityId));
-}
-
-template <typename TComp>
-bool Entity::HasComponent() const {
-	return compManager->HasComponent(*this);
-}
-
-template <typename TComp>
-TComp& Entity::GetComponent() const {
-	return compManager->GetComponent<TComp>(*this);
-}
-
-template <typename TComp, typename ...TArgs> 
-void Entity::AddComponent(TArgs&& ...args) {
-	compManager->AddComponent<TComp>(*this, std::forward<TArgs>(args)...);
-}
-
-template <typename TComp> 
-void Entity::RemoveComponent() {
-	compManager->RemoveComponent<TComp>(*this);
 }
 
 template <typename TComp>

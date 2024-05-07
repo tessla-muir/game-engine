@@ -8,6 +8,7 @@
 #include "./Components/SpriteComponent.h"
 #include "./Components/AnimationComponent.h"
 #include "./Components/KeyboardControlledComponent.h"
+#include "./Components/ProjectileDischargerComponent.h";
 #include "./Systems/MovementSystem.h"
 #include "./Systems/KeyboardControlSystem.h"
 #include "./Systems/CollisionSystem.h"
@@ -15,6 +16,7 @@
 #include "./Systems/RenderSystem.h"
 #include "./Systems/AnimationSystem.h"
 #include "./Systems/DamageSystem.h"
+#include "./Systems/ProjectileDischargeSystem.h"
 
 Game::Game() {
 	isRunning = false;
@@ -37,12 +39,14 @@ void Game::Setup() {
 	compManager->AddSystem<CollisionSystem>();
 	compManager->AddSystem<CollisionDebugSystem>();
 	compManager->AddSystem<DamageSystem>();
+	compManager->AddSystem<ProjectileDischargeSystem>();
 
 	// Add Assets
 	assetStore->AddTexture(renderer, "invader1", "./Assets/Images/invader1.png");
 	assetStore->AddTexture(renderer, "invader1a", "./Assets/Images/invader1a.png");
 	assetStore->AddTexture(renderer, "invader1b", "./Assets/Images/invader1b.png");
 	assetStore->AddTexture(renderer, "invader2", "./Assets/Images/invader2.png");
+	assetStore->AddTexture(renderer, "projectile1", "./Assets/Images/projectile1.png");
 
 	Entity test = compManager->CreateEntity();
 	test.AddComponent<TransformComponent>(glm::vec2(400.0, 400.0), glm::vec2(1.0, 1.0), 0.0);
@@ -51,12 +55,14 @@ void Game::Setup() {
 	test.AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
 	test.AddComponent<BoxColliderComponent>(110, 100);
 	test.AddComponent<KeyboardControlledComponent>(200);
+	test.AddComponent<ProjectileDischargerComponent>(glm::vec2(100.0, 0.0), 2000, 10000, true);
 
 	Entity test2 = compManager->CreateEntity();
 	test2.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
 	test2.AddComponent<SpriteComponent>("invader1", 100, 100);
 	test2.AddComponent<AnimationComponent>(2, 1, true);
 	test2.AddComponent<BoxColliderComponent>(100, 100);
+	test2.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 1000, 10000, true);
 }
 
 void Game::Initalize() {
@@ -153,6 +159,7 @@ void Game::Update() {
 	compManager->GetSystem<AnimationSystem>().Update();
 	compManager->GetSystem<CollisionSystem>().Update(eventBus);
 	compManager->GetSystem<DamageSystem>().Update();
+	compManager->GetSystem<ProjectileDischargeSystem>().Update(compManager);
 	//compManager->GetSystem<KeyboardControlSystem>().Update();
 
 	// Update component manager
