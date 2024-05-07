@@ -51,6 +51,12 @@ class Entity {
 		template <typename TComp> TComp& GetComponent() const;
 		template <typename TComp, typename ...TArgs> void AddComponent(TArgs&& ...args);
 		template <typename TComp> void RemoveComponent();
+
+		// Tag / Groups
+		void Tag(const std::string& tag);
+		bool HasTag(const std::string& tag) const;
+		void Group(const std::string& group);
+		bool BelongsToGroup(const std::string& group) const;
 };
 
 class System {
@@ -112,6 +118,14 @@ class ComponentManager {
 		// Index is the system typeid
 		std::unordered_map<std::type_index, std::shared_ptr<System>> systems;
 
+		// Tags
+		std::unordered_map<std::string, Entity> entityPerTag;
+		std::unordered_map<int, std::string> tagPerEntity;
+
+		// Groups
+		std::unordered_map<std::string, std::set<Entity>> entitiesPerGroup;
+		std::unordered_map<int, std::string> groupPerEntity;
+
 		// Holds freed ids
 		std::deque<int> availableIds;
 
@@ -137,7 +151,39 @@ class ComponentManager {
 		template <typename TSys, typename ...TArgs> void AddSystem(TArgs&& ...args);
 		template <typename TSys> void RemoveSystem();
 		template <typename TSys> TSys& GetSystem() const;
+
+		// Tags
+		void TagEntity(Entity entity, const std::string& tag);
+		bool EntityHasTag(Entity entity, const std::string& tag) const;
+		Entity GetEntityByTag(const std::string& tag) const;
+		void RemoveEntityTag(Entity entity);
+
+		// Groups
+		void GroupEntity(Entity entity, const std::string& group);
+		bool EntityBelongsToGroup(Entity entity, const std::string& group) const;
+		std::vector<Entity> GetEntitiesByGroup(const std::string& group) const;
+		void RemoveEntityGroup(Entity entity);
 };
+
+template <typename TComp>
+bool Entity::HasComponent() const {
+	return compManager->HasComponent<TComp>(*this);
+}
+
+template <typename TComp>
+TComp& Entity::GetComponent() const {
+	return compManager->GetComponent<TComp>(*this);
+}
+
+template <typename TComp, typename ...TArgs>
+void Entity::AddComponent(TArgs&& ...args) {
+	compManager->AddComponent<TComp>(*this, std::forward<TArgs>(args)...);
+}
+
+template <typename TComp>
+void Entity::RemoveComponent() {
+	compManager->RemoveComponent<TComp>(*this);
+}
 
 template <typename TComp>
 bool ComponentManager::HasComponent(Entity entity) const {
@@ -207,26 +253,6 @@ void ComponentManager::RemoveComponent(Entity entity) {
 	entitySignatures[entityId].set(componentId, false);
 
 	Logger::Log("Component " + std::to_string(componentId) + " removed from entity " + std::to_string(entityId));
-}
-
-template <typename TComp>
-bool Entity::HasComponent() const {
-	return compManager->HasComponent(*this);
-}
-
-template <typename TComp>
-TComp& Entity::GetComponent() const {
-	return compManager->GetComponent<TComp>(*this);
-}
-
-template <typename TComp, typename ...TArgs> 
-void Entity::AddComponent(TArgs&& ...args) {
-	compManager->AddComponent<TComp>(*this, std::forward<TArgs>(args)...);
-}
-
-template <typename TComp> 
-void Entity::RemoveComponent() {
-	compManager->RemoveComponent<TComp>(*this);
 }
 
 template <typename TComp>

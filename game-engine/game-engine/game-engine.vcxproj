@@ -153,6 +153,10 @@
     <ClInclude Include="Components\AnimationComponent.h" />
     <ClInclude Include="Components\BoxColliderComponent.h" />
     <ClInclude Include="Components\KeyboardControlledComponent.h" />
+    <ClInclude Include="Components\LifetimeComponent.h" />
+    <ClInclude Include="Components\ParticleComponent.h" />
+    <ClInclude Include="Components\PlayerComponent.h" />
+    <ClInclude Include="Components\ProjectileDischargerComponent.h" />
     <ClInclude Include="Components\RigidbodyComponent.h" />
     <ClInclude Include="Components\SpriteComponent.h" />
     <ClInclude Include="Components\TransformComponent.h" />
@@ -168,7 +172,9 @@
     <ClInclude Include="Systems\CollisionSystem.h" />
     <ClInclude Include="Systems\DamageSystem.h" />
     <ClInclude Include="Systems\KeyboardControlSystem.h" />
+    <ClInclude Include="Systems\LifetimeSystem.h" />
     <ClInclude Include="Systems\MovementSystem.h" />
+    <ClInclude Include="Systems\ProjectileDischargeSystem.h" />
     <ClInclude Include="Systems\RenderSystem.h" />
   </ItemGroup>
   <ItemGroup>

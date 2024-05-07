@@ -8,6 +8,8 @@
 #include "./Components/SpriteComponent.h"
 #include "./Components/AnimationComponent.h"
 #include "./Components/KeyboardControlledComponent.h"
+#include "./Components/ProjectileDischargerComponent.h";
+#include "./Components/PlayerComponent.h"
 #include "./Systems/MovementSystem.h"
 #include "./Systems/KeyboardControlSystem.h"
 #include "./Systems/CollisionSystem.h"
@@ -15,6 +17,8 @@
 #include "./Systems/RenderSystem.h"
 #include "./Systems/AnimationSystem.h"
 #include "./Systems/DamageSystem.h"
+#include "./Systems/LifetimeSystem.h"
+#include "./Systems/ProjectileDischargeSystem.h"
 
 Game::Game() {
 	isRunning = false;
@@ -37,12 +41,15 @@ void Game::Setup() {
 	compManager->AddSystem<CollisionSystem>();
 	compManager->AddSystem<CollisionDebugSystem>();
 	compManager->AddSystem<DamageSystem>();
+	compManager->AddSystem<ProjectileDischargeSystem>();
+	compManager->AddSystem<LifetimeSystem>();
 
 	// Add Assets
 	assetStore->AddTexture(renderer, "invader1", "./Assets/Images/invader1.png");
 	assetStore->AddTexture(renderer, "invader1a", "./Assets/Images/invader1a.png");
 	assetStore->AddTexture(renderer, "invader1b", "./Assets/Images/invader1b.png");
 	assetStore->AddTexture(renderer, "invader2", "./Assets/Images/invader2.png");
+	assetStore->AddTexture(renderer, "projectile1", "./Assets/Images/projectile1.png");
 
 	Entity test = compManager->CreateEntity();
 	test.AddComponent<TransformComponent>(glm::vec2(400.0, 400.0), glm::vec2(1.0, 1.0), 0.0);
@@ -50,13 +57,25 @@ void Game::Setup() {
 	test.AddComponent<AnimationComponent>(2, 1, true);
 	test.AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
 	test.AddComponent<BoxColliderComponent>(110, 100);
-	test.AddComponent<KeyboardControlledComponent>(200);
+	test.AddComponent<KeyboardControlledComponent>(200, true, false);
+	test.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, -200.0), 0, 4000, 500);
+	test.Tag("Player");
 
 	Entity test2 = compManager->CreateEntity();
 	test2.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
 	test2.AddComponent<SpriteComponent>("invader1", 100, 100);
 	test2.AddComponent<AnimationComponent>(2, 1, true);
 	test2.AddComponent<BoxColliderComponent>(100, 100);
+	test2.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 3000, 4000);
+	test2.Group("Enemy");
+
+	Entity test3 = compManager->CreateEntity();
+	test3.AddComponent<TransformComponent>(glm::vec2(400.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
+	test3.AddComponent<SpriteComponent>("invader1", 100, 100);
+	test3.AddComponent<AnimationComponent>(2, 1, true);
+	test3.AddComponent<BoxColliderComponent>(100, 100);
+	test3.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 2000, 4000);
+	test3.Group("Enemy");
 }
 
 void Game::Initalize() {
@@ -147,13 +166,14 @@ void Game::Update() {
 	eventBus->Reset(); // Reset Listeners
 	compManager->GetSystem<DamageSystem>().ListenToEvents(eventBus); // Establish listeners
 	compManager->GetSystem<KeyboardControlSystem>().ListenToEvents(eventBus);
+	compManager->GetSystem<ProjectileDischargeSystem>().ListenToEvents(eventBus);
 
 	// Update systems
 	compManager->GetSystem<MovementSystem>().Update(deltaTime);
 	compManager->GetSystem<AnimationSystem>().Update();
 	compManager->GetSystem<CollisionSystem>().Update(eventBus);
-	compManager->GetSystem<DamageSystem>().Update();
-	//compManager->GetSystem<KeyboardControlSystem>().Update();
+	compManager->GetSystem<LifetimeSystem>().Update();
+	compManager->GetSystem<ProjectileDischargeSystem>().Update();
 
 	// Update component manager
 	compManager->Update();
