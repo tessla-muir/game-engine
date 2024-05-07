@@ -179,10 +179,19 @@
     <ClInclude Include="Systems\RenderSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Assets\Images\alienship.png" />
+    <Image Include="Assets\Images\alien_death.png" />
+    <Image Include="Assets\Images\invader1.png" />
     <Image Include="Assets\Images\invader1a.png" />
     <Image Include="Assets\Images\invader1b.png" />
+    <Image Include="Assets\Images\invader2.png" />
     <Image Include="Assets\Images\invader2a.png" />
     <Image Include="Assets\Images\invader2b.png" />
+    <Image Include="Assets\Images\invader3.png" />
+    <Image Include="Assets\Images\projectile1.png" />
+    <Image Include="Assets\Images\projectile2.png" />
+    <Image Include="Assets\Images\ship.png" />
+    <Image Include="Assets\Images\ship_destroyed.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

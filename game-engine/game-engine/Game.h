@@ -28,6 +28,7 @@ private:
 		~Game();
 		void Initalize();
 		void Setup();
+		void LoadLevel();
 		void Run();
 		void ProcessInput();
 		void Update();

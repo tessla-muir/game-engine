@@ -27,7 +27,7 @@ class MovementSystem : public System {
 					SpriteComponent sprite = entity.GetComponent<SpriteComponent>();
 					int padding = 10;
 					transform.position.x = transform.position.x < padding ? padding : transform.position.x;
-					transform.position.x = transform.position.x > WIN_WIDTH - padding - sprite.width ? WIN_WIDTH - padding - sprite.width : transform.position.x;
+					transform.position.x = transform.position.x > WIN_WIDTH - padding - sprite.width * 2.0 ? WIN_WIDTH - padding - sprite.width * 2.0 : transform.position.x;
 				}
 			}
 		}

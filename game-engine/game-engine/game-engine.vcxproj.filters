@@ -133,5 +133,32 @@
     <Image Include="Assets\Images\invader2a.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Assets\Images\ship_destroyed.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\alien_death.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\alienship.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\invader1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\invader2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\invader3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\projectile1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\projectile2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\ship.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
