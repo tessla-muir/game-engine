@@ -59,7 +59,7 @@ void Game::Setup() {
 	test.AddComponent<BoxColliderComponent>(110, 100);
 	test.AddComponent<KeyboardControlledComponent>(200);
 	test.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, -200.0), 0, 3000, true);
-	test.AddComponent<PlayerComponent>();
+	test.Tag("Player");
 
 	Entity test2 = compManager->CreateEntity();
 	test2.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
