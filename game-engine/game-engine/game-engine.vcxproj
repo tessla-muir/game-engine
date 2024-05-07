@@ -154,6 +154,7 @@
     <ClInclude Include="Components\BoxColliderComponent.h" />
     <ClInclude Include="Components\KeyboardControlledComponent.h" />
     <ClInclude Include="Components\LifetimeComponent.h" />
+    <ClInclude Include="Components\ParticleComponent.h" />
     <ClInclude Include="Components\PlayerComponent.h" />
     <ClInclude Include="Components\ProjectileDischargerComponent.h" />
     <ClInclude Include="Components\RigidbodyComponent.h" />

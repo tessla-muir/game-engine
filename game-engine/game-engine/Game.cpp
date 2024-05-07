@@ -58,7 +58,7 @@ void Game::Setup() {
 	test.AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
 	test.AddComponent<BoxColliderComponent>(110, 100);
 	test.AddComponent<KeyboardControlledComponent>(200);
-	test.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, -200.0), 0, 3000, true);
+	test.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, -200.0), 0, 3000);
 	test.Tag("Player");
 
 	Entity test2 = compManager->CreateEntity();
@@ -66,6 +66,8 @@ void Game::Setup() {
 	test2.AddComponent<SpriteComponent>("invader1", 100, 100);
 	test2.AddComponent<AnimationComponent>(2, 1, true);
 	test2.AddComponent<BoxColliderComponent>(100, 100);
+	test2.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 4000, 4000);
+	test2.BelongsToGroup("Enemy");
 }
 
 void Game::Initalize() {

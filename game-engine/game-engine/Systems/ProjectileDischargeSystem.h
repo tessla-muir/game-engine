@@ -10,7 +10,7 @@
 #include "../Components/BoxColliderComponent.h"
 #include "../Components/SpriteComponent.h"
 #include "../Components/KeyboardControlledComponent.h"
-#include "../Components/PlayerComponent.h"
+#include "../Components/ParticleComponent.h"
 #include <SDL.h>
 #include "../Logger/Logger.h"
 
@@ -50,6 +50,8 @@ class ProjectileDischargeSystem : public System {
 						projectile.AddComponent<SpriteComponent>("projectile1", 8, 8);
 						projectile.AddComponent<BoxColliderComponent>(8, 8);
 						projectile.AddComponent<LifetimeComponent>(projectileDischarger.projectileDuration);
+						projectile.AddComponent<ParticleComponent>(true);
+						projectile.Group("Projectiles");
 					}
 				}
 			}
@@ -79,6 +81,8 @@ class ProjectileDischargeSystem : public System {
 					projectile.AddComponent<SpriteComponent>("projectile1", 8, 8);
 					projectile.AddComponent<BoxColliderComponent>(8, 8);
 					projectile.AddComponent<LifetimeComponent>(projectileDischarger.projectileDuration);
+					projectile.AddComponent<ParticleComponent>(false);
+					projectile.Group("Projectiles");
 
 					// Update time
 					projectileDischarger.lastDischargeTime = SDL_GetTicks();
