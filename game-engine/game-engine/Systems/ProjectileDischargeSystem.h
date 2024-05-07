@@ -12,7 +12,7 @@
 #include "../Components/KeyboardControlledComponent.h"
 #include "../Components/ParticleComponent.h"
 #include <SDL.h>
-#include "../Logger/Logger.h"
+#include "../Debugger/Debugger.h"
 
 class ProjectileDischargeSystem : public System {
 	public:
@@ -55,6 +55,8 @@ class ProjectileDischargeSystem : public System {
 							projectile.AddComponent<ParticleComponent>(true);
 							projectile.Group("Projectiles");
 
+							if (Debugger::debugLevel == 4 || Debugger::debugLevel == 9) Debugger::Log("ProjectileDischargeSystem: Player shot out projectile " + std::to_string(projectile.GetId()));
+
 							// Update time
 							projectileDischarger.lastDischargeTime = SDL_GetTicks();
 						}
@@ -89,6 +91,8 @@ class ProjectileDischargeSystem : public System {
 					projectile.AddComponent<LifetimeComponent>(projectileDischarger.projectileDuration);
 					projectile.AddComponent<ParticleComponent>(false);
 					projectile.Group("Projectiles");
+
+					if (Debugger::debugLevel == 4 || Debugger::debugLevel == 9) Debugger::Log("ProjectileDischargeSystem: Entity " + std::to_string(entity.GetId()) + " shot out projectile " + std::to_string(projectile.GetId()));
 
 					// Update time
 					projectileDischarger.lastDischargeTime = SDL_GetTicks();

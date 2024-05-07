@@ -2,6 +2,7 @@
 #define DAMAGESYSTEM_H
 
 #include "../Logger/Logger.h"
+#include "../Debugger/Debugger.h"
 #include "../ECS/ECS.h"
 #include "../Components/BoxColliderComponent.h"
 #include "../Components/ParticleComponent.h"
@@ -40,7 +41,9 @@ class DamageSystem : public System {
 			ParticleComponent particle = proj.GetComponent<ParticleComponent>();
 			
 			if (!particle.isFriendly) {
-				Logger::Debug("PLAYER HIT");
+				if (Debugger::debugLevel == 6 || Debugger::debugLevel == 9) Debugger::Log("DamageSystem: Player hit by projectile " + std::to_string(proj.GetId()));
+				Logger::Log("PLAYER DIED");
+
 				proj.Destroy();
 				player.Destroy();
 			}
@@ -50,7 +53,8 @@ class DamageSystem : public System {
 			ParticleComponent particle = proj.GetComponent<ParticleComponent>();
 
 			if (particle.isFriendly) {
-				Logger::Debug("ENEMY HIT");
+				if (Debugger::debugLevel == 6 || Debugger::debugLevel == 9) Debugger::Log("DamageSystem: Enemy " + std::to_string(enemy.GetId()) + " hit by projectile " + std::to_string(proj.GetId()));
+				
 				proj.Destroy();
 				enemy.Destroy();
 			}

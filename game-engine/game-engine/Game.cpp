@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "./Logger/Logger.h"
+#include "./Debugger/Debugger.h"
 #include "./ECS/ECS.h"
 #include <SDL.h>
 #include "./Components/TransformComponent.h"
@@ -9,7 +10,6 @@
 #include "./Components/AnimationComponent.h"
 #include "./Components/KeyboardControlledComponent.h"
 #include "./Components/ProjectileDischargerComponent.h";
-#include "./Components/PlayerComponent.h"
 #include "./Systems/MovementSystem.h"
 #include "./Systems/KeyboardControlSystem.h"
 #include "./Systems/CollisionSystem.h"
@@ -149,9 +149,6 @@ void Game::ProcessInput() {
 				isRunning = false;
 				break;
 			}
-			if (event.key.keysym.sym == SDLK_p) {
-				isDebugging = !isDebugging;
-			}
 			eventBus->DispatchEvent<KeyPressedEvent>(event.key.keysym.sym, true);
 			break;
 		}
@@ -196,7 +193,7 @@ void Game::Render() {
 
 	// Render objects
 	compManager->GetSystem<RenderSystem>().Update(renderer, assetStore);
-	if (isDebugging) compManager->GetSystem<CollisionDebugSystem>().Update(renderer);
+	if (isDebugging || (Debugger::debugLevel == 5 || Debugger::debugLevel == 9)) compManager->GetSystem<CollisionDebugSystem>().Update(renderer);
 
 	SDL_RenderPresent(renderer);
 }

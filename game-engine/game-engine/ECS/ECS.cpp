@@ -1,6 +1,4 @@
 #include "ECS.h"
-#include <vector>
-#include "../Logger/Logger.h"
 
 int BaseComponent::nextId = 0;
 
@@ -83,7 +81,7 @@ Entity ComponentManager::CreateEntity() {
 	entity.compManager = this;
 	entitiesToAdd.insert(entity);
 
-	Logger::Log("Entity created with id " + std::to_string(id));
+	if (Debugger::debugLevel == 1 || Debugger::debugLevel == 2 || Debugger::debugLevel == 9) Debugger::Log("ECS: Entity created with id " + std::to_string(id));
 
 	return entity;
 }
@@ -105,7 +103,7 @@ void ComponentManager::AddEntityToSystems(Entity entity) {
 
 void ComponentManager::RemoveEntity(Entity entity) {
 	entitiesToRemove.insert(entity);
-	Logger::Log("Entity removed with id " + std::to_string(entity.GetId()));
+	if (Debugger::debugLevel == 1 || Debugger::debugLevel == 2 || Debugger::debugLevel == 9) Debugger::Log("ECS: Entity removed with id " + std::to_string(entity.GetId()));
 }
 
 void ComponentManager::RemoveEntityFromSystems(Entity entity) {

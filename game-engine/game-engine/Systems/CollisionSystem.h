@@ -45,6 +45,7 @@ class CollisionSystem : public System {
 					)) {
 						// Collision!
 						eventBus->DispatchEvent<CollisionEvent>(one, two);
+						if (Debugger::debugLevel == 5 || Debugger::debugLevel == 9) Debugger::Log("CollisionSystem: Entity" + std::to_string(one.GetId()) + " and Entity " + std::to_string(two.GetId()) + " collided");
 					}
 				}
 			}

@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AssetStore\AssetStore.cpp" />
+    <ClCompile Include="Debugger\Debugger.cpp" />
     <ClCompile Include="ECS\ECS.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Logger\Logger.cpp" />
@@ -155,11 +156,11 @@
     <ClInclude Include="Components\KeyboardControlledComponent.h" />
     <ClInclude Include="Components\LifetimeComponent.h" />
     <ClInclude Include="Components\ParticleComponent.h" />
-    <ClInclude Include="Components\PlayerComponent.h" />
     <ClInclude Include="Components\ProjectileDischargerComponent.h" />
     <ClInclude Include="Components\RigidbodyComponent.h" />
     <ClInclude Include="Components\SpriteComponent.h" />
     <ClInclude Include="Components\TransformComponent.h" />
+    <ClInclude Include="Debugger\Debugger.h" />
     <ClInclude Include="ECS\ECS.h" />
     <ClInclude Include="Events\CollisionEvent.h" />
     <ClInclude Include="Events\EventBus\Event.h" />

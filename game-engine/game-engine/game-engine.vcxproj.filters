@@ -33,6 +33,9 @@
     <ClCompile Include="AssetStore\AssetStore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Debugger\Debugger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -110,10 +113,10 @@
     <ClInclude Include="Systems\LifetimeSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\PlayerComponent.h">
+    <ClInclude Include="Components\ParticleComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\ParticleComponent.h">
+    <ClInclude Include="Debugger\Debugger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,10 +2,11 @@
 #define EVENTBUS_H
 
 #include "Event.h"
+#include "../../Debugger/Debugger.h"
 #include <map>
 #include <typeindex>
 #include <list>
-#include <memory>
+#include <memory> 
 
 class BaseEventCallback {
 	private:
@@ -77,6 +78,8 @@ class EventBus {
 					auto callback = it->get();
 					TEvent event(std::forward<TArgs>(args)...);
 					callback->Execute(event);
+
+					if (Debugger::debugLevel == 3 || Debugger::debugLevel == 9) Debugger::Log("Event: Execute event " + std::string(typeid(TEvent).name()));
 				}
 			}
 		}
