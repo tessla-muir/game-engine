@@ -48,36 +48,44 @@ void Game::Setup() {
 	compManager->AddSystem<LifetimeSystem>();
 
 	// Add Assets
+	assetStore->AddTexture(renderer, "ship", "./Assets/Images/ship.png");
 	assetStore->AddTexture(renderer, "invader1", "./Assets/Images/invader1.png");
-	assetStore->AddTexture(renderer, "invader1a", "./Assets/Images/invader1a.png");
-	assetStore->AddTexture(renderer, "invader1b", "./Assets/Images/invader1b.png");
 	assetStore->AddTexture(renderer, "invader2", "./Assets/Images/invader2.png");
+	assetStore->AddTexture(renderer, "invader3", "./Assets/Images/invader3.png");
 	assetStore->AddTexture(renderer, "projectile1", "./Assets/Images/projectile1.png");
 
-	Entity test = compManager->CreateEntity();
-	test.AddComponent<TransformComponent>(glm::vec2(WIN_WIDTH/2 - 55, WIN_HEIGHT-200), glm::vec2(1.0, 1.0), 0.0);
-	test.AddComponent<SpriteComponent>("invader2", 110, 100);
-	test.AddComponent<AnimationComponent>(2, 1, true);
-	test.AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
-	test.AddComponent<BoxColliderComponent>(110, 100);
-	test.AddComponent<KeyboardControlledComponent>(200, true, false);
-	test.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, -200.0), 0, 4000, 500);
-	test.Tag("Player");
+	// Player
+	Entity player = compManager->CreateEntity();
+	player.AddComponent<TransformComponent>(glm::vec2(WIN_WIDTH/2 - 55, WIN_HEIGHT-200), glm::vec2(2.0, 2.0), 0.0);
+	player.AddComponent<SpriteComponent>("ship", 30, 30);
+	player.AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
+	player.AddComponent<BoxColliderComponent>(30 * 2.0, 30 * 2.0);
+	player.AddComponent<KeyboardControlledComponent>(200, true, false);
+	player.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, -200.0), 0, 4000, 500);
+	player.Tag("Player");
+
+	// Aliens
+	Entity test1 = compManager->CreateEntity();
+	test1.AddComponent<TransformComponent>(glm::vec2(200.0, 100.0), glm::vec2(2.0, 2.0), 0.0);
+	test1.AddComponent<SpriteComponent>("invader2",30, 30);
+	test1.AddComponent<AnimationComponent>(2, 1, true);
+	test1.AddComponent<BoxColliderComponent>(30 * 2.0, 30 * 2.0);
+	test1.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 8000, 8000);
+	test1.Group("Enemy");
 
 	Entity test2 = compManager->CreateEntity();
-	test2.AddComponent<TransformComponent>(glm::vec2(200.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
-	test2.AddComponent<SpriteComponent>("invader1", 100, 100);
+	test2.AddComponent<TransformComponent>(glm::vec2(700.0, 100.0), glm::vec2(2.0, 2.0), 0.0);
+	test2.AddComponent<SpriteComponent>("invader1", 30, 30);
 	test2.AddComponent<AnimationComponent>(2, 1, true);
-	test2.AddComponent<BoxColliderComponent>(100, 100);
-	test2.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 8000, 8000);
+	test2.AddComponent<BoxColliderComponent>(30 * 2.0, 30 * 2.0);
+	test2.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 6000, 8000);
 	test2.Group("Enemy");
 
 	Entity test3 = compManager->CreateEntity();
-	test3.AddComponent<TransformComponent>(glm::vec2(700.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
-	test3.AddComponent<SpriteComponent>("invader1", 100, 100);
+	test3.AddComponent<TransformComponent>(glm::vec2(450.0, 100.0), glm::vec2(2.0, 2.0), 0.0);
+	test3.AddComponent<SpriteComponent>("invader3", 30, 30);
 	test3.AddComponent<AnimationComponent>(2, 1, true);
-	test3.AddComponent<BoxColliderComponent>(100, 100);
-	test3.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 6000, 8000);
+	test3.AddComponent<BoxColliderComponent>(30 * 2.0, 30 * 2.0);
 	test3.Group("Enemy");
 }
 
