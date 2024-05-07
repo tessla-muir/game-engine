@@ -20,6 +20,9 @@
 #include "./Systems/LifetimeSystem.h"
 #include "./Systems/ProjectileDischargeSystem.h"
 
+const int WIN_WIDTH = 980;
+const int WIN_HEIGHT = 980;
+
 Game::Game() {
 	isRunning = false;
 	isDebugging = false;
@@ -52,7 +55,7 @@ void Game::Setup() {
 	assetStore->AddTexture(renderer, "projectile1", "./Assets/Images/projectile1.png");
 
 	Entity test = compManager->CreateEntity();
-	test.AddComponent<TransformComponent>(glm::vec2(400.0, 400.0), glm::vec2(1.0, 1.0), 0.0);
+	test.AddComponent<TransformComponent>(glm::vec2(WIN_WIDTH/2 - 55, WIN_HEIGHT-200), glm::vec2(1.0, 1.0), 0.0);
 	test.AddComponent<SpriteComponent>("invader2", 110, 100);
 	test.AddComponent<AnimationComponent>(2, 1, true);
 	test.AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
@@ -62,19 +65,19 @@ void Game::Setup() {
 	test.Tag("Player");
 
 	Entity test2 = compManager->CreateEntity();
-	test2.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
+	test2.AddComponent<TransformComponent>(glm::vec2(200.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
 	test2.AddComponent<SpriteComponent>("invader1", 100, 100);
 	test2.AddComponent<AnimationComponent>(2, 1, true);
 	test2.AddComponent<BoxColliderComponent>(100, 100);
-	test2.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 3000, 4000);
+	test2.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 8000, 8000);
 	test2.Group("Enemy");
 
 	Entity test3 = compManager->CreateEntity();
-	test3.AddComponent<TransformComponent>(glm::vec2(400.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
+	test3.AddComponent<TransformComponent>(glm::vec2(700.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
 	test3.AddComponent<SpriteComponent>("invader1", 100, 100);
 	test3.AddComponent<AnimationComponent>(2, 1, true);
 	test3.AddComponent<BoxColliderComponent>(100, 100);
-	test3.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 2000, 4000);
+	test3.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 6000, 8000);
 	test3.Group("Enemy");
 }
 
@@ -89,8 +92,8 @@ void Game::Initalize() {
 		"2D Game Engine", // Window title
 		SDL_WINDOWPOS_CENTERED, // Center the window on width & height
 		SDL_WINDOWPOS_CENTERED,
-		800, // Window resolution: width & height
-		600,
+		WIN_WIDTH, // Window resolution: width & height
+		WIN_HEIGHT,
 		SDL_WINDOW_SHOWN // Show window
 	);
 
