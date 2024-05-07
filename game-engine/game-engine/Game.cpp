@@ -9,6 +9,7 @@
 #include "./Components/AnimationComponent.h"
 #include "./Components/KeyboardControlledComponent.h"
 #include "./Components/ProjectileDischargerComponent.h";
+#include "./Components/PlayerComponent.h"
 #include "./Systems/MovementSystem.h"
 #include "./Systems/KeyboardControlSystem.h"
 #include "./Systems/CollisionSystem.h"
@@ -57,14 +58,14 @@ void Game::Setup() {
 	test.AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
 	test.AddComponent<BoxColliderComponent>(110, 100);
 	test.AddComponent<KeyboardControlledComponent>(200);
-	test.AddComponent<ProjectileDischargerComponent>(glm::vec2(100.0, 0.0), 2000, 3000, true);
+	test.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, -200.0), 0, 3000, true);
+	test.AddComponent<PlayerComponent>();
 
 	Entity test2 = compManager->CreateEntity();
 	test2.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
 	test2.AddComponent<SpriteComponent>("invader1", 100, 100);
 	test2.AddComponent<AnimationComponent>(2, 1, true);
 	test2.AddComponent<BoxColliderComponent>(100, 100);
-	test2.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 1000, 10000, true);
 }
 
 void Game::Initalize() {
@@ -155,13 +156,14 @@ void Game::Update() {
 	eventBus->Reset(); // Reset Listeners
 	compManager->GetSystem<DamageSystem>().ListenToEvents(eventBus); // Establish listeners
 	compManager->GetSystem<KeyboardControlSystem>().ListenToEvents(eventBus);
+	compManager->GetSystem<ProjectileDischargeSystem>().ListenToEvents(eventBus);
 
 	// Update systems
 	compManager->GetSystem<MovementSystem>().Update(deltaTime);
 	compManager->GetSystem<AnimationSystem>().Update();
 	compManager->GetSystem<CollisionSystem>().Update(eventBus);
 	compManager->GetSystem<LifetimeSystem>().Update();
-	compManager->GetSystem<ProjectileDischargeSystem>().Update(compManager);
+	compManager->GetSystem<ProjectileDischargeSystem>().Update();
 
 	// Update component manager
 	compManager->Update();
