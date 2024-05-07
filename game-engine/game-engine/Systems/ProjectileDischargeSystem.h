@@ -29,7 +29,7 @@ class ProjectileDischargeSystem : public System {
 			if (event.key == SDLK_SPACE) {
 				for (auto entity : GetEntities()) {
 					// Get player -- only player should shoot
-					if (entity.HasComponent<PlayerComponent>()) {
+					if (entity.HasTag("Player")) {
 						ProjectileDischargerComponent& projectileDischarger = entity.GetComponent<ProjectileDischargerComponent>();
 						TransformComponent transform = entity.GetComponent<TransformComponent>();
 						RigidBodyComponent rigidbody = entity.GetComponent<RigidBodyComponent>();

@@ -28,15 +28,31 @@ class DamageSystem : public System {
 			else if (a.HasTag("Player") && b.BelongsToGroup("Projectiles")) {
 				PlayerProjectileInteraction(b, a);
 			}
+			else if (a.BelongsToGroup("Enemy") && b.BelongsToGroup("Projectiles")) {
+				EnemyProjectileInteraction(b, a);
+			}
+			else if (a.BelongsToGroup("Projectiles") && b.BelongsToGroup("Enemy")) {
+				EnemyProjectileInteraction(a, b);
+			}
 		}
 
 		void PlayerProjectileInteraction(Entity proj, Entity player) {
 			ParticleComponent particle = proj.GetComponent<ParticleComponent>();
 			
 			if (!particle.isFriendly) {
-				Logger::Log("PLAYER HIT");
+				Logger::Debug("PLAYER HIT");
 				proj.Destroy();
 				player.Destroy();
+			}
+		}
+
+		void EnemyProjectileInteraction(Entity proj, Entity enemy) {
+			ParticleComponent particle = proj.GetComponent<ParticleComponent>();
+
+			if (particle.isFriendly) {
+				Logger::Debug("ENEMY HIT");
+				proj.Destroy();
+				enemy.Destroy();
 			}
 		}
 };

@@ -57,7 +57,7 @@ void Game::Setup() {
 	test.AddComponent<AnimationComponent>(2, 1, true);
 	test.AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
 	test.AddComponent<BoxColliderComponent>(110, 100);
-	test.AddComponent<KeyboardControlledComponent>(200);
+	test.AddComponent<KeyboardControlledComponent>(200, true, false);
 	test.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, -200.0), 0, 3000);
 	test.Tag("Player");
 
@@ -66,8 +66,16 @@ void Game::Setup() {
 	test2.AddComponent<SpriteComponent>("invader1", 100, 100);
 	test2.AddComponent<AnimationComponent>(2, 1, true);
 	test2.AddComponent<BoxColliderComponent>(100, 100);
-	test2.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 4000, 4000);
-	test2.BelongsToGroup("Enemy");
+	test2.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 3000, 4000);
+	test2.Group("Enemy");
+
+	Entity test3 = compManager->CreateEntity();
+	test3.AddComponent<TransformComponent>(glm::vec2(400.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
+	test3.AddComponent<SpriteComponent>("invader1", 100, 100);
+	test3.AddComponent<AnimationComponent>(2, 1, true);
+	test3.AddComponent<BoxColliderComponent>(100, 100);
+	test3.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 2000, 4000);
+	test3.Group("Enemy");
 }
 
 void Game::Initalize() {
