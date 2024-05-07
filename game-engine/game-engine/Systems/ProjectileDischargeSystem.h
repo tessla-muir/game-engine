@@ -4,6 +4,7 @@
 #include "../ECS/ECS.h"
 #include "../Components/TransformComponent.h"
 #include "../Components/ProjectileDischargerComponent.h"
+#include "../Components/LifetimeComponent.h"
 #include "../Components/RigidbodyComponent.h"
 #include "../Components/BoxColliderComponent.h"
 #include "../Components/SpriteComponent.h"
@@ -37,6 +38,7 @@ class ProjectileDischargeSystem : public System {
 					projectile.AddComponent<RigidBodyComponent>(projectileDischarger.velocity);
 					projectile.AddComponent<SpriteComponent>("projectile1", 8, 8);
 					projectile.AddComponent<BoxColliderComponent>(8, 8);
+					projectile.AddComponent<LifetimeComponent>(projectileDischarger.projectileDuration);
 
 					// Update time
 					projectileDischarger.lastDischargeTime = SDL_GetTicks();

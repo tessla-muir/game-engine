@@ -16,6 +16,7 @@
 #include "./Systems/RenderSystem.h"
 #include "./Systems/AnimationSystem.h"
 #include "./Systems/DamageSystem.h"
+#include "./Systems/LifetimeSystem.h"
 #include "./Systems/ProjectileDischargeSystem.h"
 
 Game::Game() {
@@ -40,6 +41,7 @@ void Game::Setup() {
 	compManager->AddSystem<CollisionDebugSystem>();
 	compManager->AddSystem<DamageSystem>();
 	compManager->AddSystem<ProjectileDischargeSystem>();
+	compManager->AddSystem<LifetimeSystem>();
 
 	// Add Assets
 	assetStore->AddTexture(renderer, "invader1", "./Assets/Images/invader1.png");
@@ -55,7 +57,7 @@ void Game::Setup() {
 	test.AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
 	test.AddComponent<BoxColliderComponent>(110, 100);
 	test.AddComponent<KeyboardControlledComponent>(200);
-	test.AddComponent<ProjectileDischargerComponent>(glm::vec2(100.0, 0.0), 2000, 10000, true);
+	test.AddComponent<ProjectileDischargerComponent>(glm::vec2(100.0, 0.0), 2000, 3000, true);
 
 	Entity test2 = compManager->CreateEntity();
 	test2.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
@@ -158,9 +160,8 @@ void Game::Update() {
 	compManager->GetSystem<MovementSystem>().Update(deltaTime);
 	compManager->GetSystem<AnimationSystem>().Update();
 	compManager->GetSystem<CollisionSystem>().Update(eventBus);
-	compManager->GetSystem<DamageSystem>().Update();
+	compManager->GetSystem<LifetimeSystem>().Update();
 	compManager->GetSystem<ProjectileDischargeSystem>().Update(compManager);
-	//compManager->GetSystem<KeyboardControlSystem>().Update();
 
 	// Update component manager
 	compManager->Update();

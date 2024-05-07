@@ -4,6 +4,7 @@
 #include <glm.hpp>
 #include <SDL.h>
 
+// Entity that actually discharges the projectiles
 struct ProjectileDischargerComponent {
 	glm::vec2 velocity;
 	int dischargeFrequency;

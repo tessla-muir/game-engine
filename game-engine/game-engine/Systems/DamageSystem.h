@@ -18,13 +18,7 @@ class DamageSystem : public System {
 		}
 
 		void onCollision(CollisionEvent& event) {
-			//Logger::Debug("DamageSystem.cs: Recieve Collision Event between " + std::to_string(event.a.GetId()) + " and " + std::to_string(event.b.GetId()));
-			//event.a.Destroy();
-			//event.b.Destroy();
-		}
-
-		void Update() {
-
+			
 		}
 };
 
