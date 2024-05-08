@@ -9,6 +9,7 @@
 #include <deque>
 #include <memory>
 #include "../Logger/Logger.h"
+#include "../Debugger/Debugger.h"
 #include <glm.hpp>
 
 // Signature to keep track of what components an entity has
@@ -231,7 +232,7 @@ void ComponentManager::AddComponent(Entity entity, TArgs&& ...args) {
 	// Set new signature
 	entitySignatures[entityId].set(componentId);
 
-	Logger::Log("Component " + std::to_string(componentId) + " added to entity " + std::to_string(entityId));
+	if (Debugger::debugLevel == 2 || Debugger::debugLevel == 9) Debugger::Log("ECS: Component " + std::to_string(componentId) + " added to entity " + std::to_string(entityId));
 }
 
 template <typename TComp>
@@ -245,14 +246,14 @@ void ComponentManager::RemoveComponent(Entity entity) {
 		return;
 	}
 
-	//// Remove component
-	//std::shared_ptr<Pool<TComp>> compPool = std::static_pointer_cast<Pool<TComp>>(componentPools[componentId]);
-	//compPool->Remove(entityId);
+	// Remove component
+	std::shared_ptr<Pool<TComp>> compPool = std::static_pointer_cast<Pool<TComp>>(componentPools[componentId]);
+	compPool->Remove(entityId);
 
 	// Deactivate signature part
 	entitySignatures[entityId].set(componentId, false);
 
-	Logger::Log("Component " + std::to_string(componentId) + " removed from entity " + std::to_string(entityId));
+	if (Debugger::debugLevel == 2 || Debugger::debugLevel == 9) Debugger::Log("ECS: Component " + std::to_string(componentId) + " removed from entity " + std::to_string(entityId));
 }
 
 template <typename TComp>

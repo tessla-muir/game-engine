@@ -1,5 +1,7 @@
 #include "Game.h"
 #include "./Logger/Logger.h"
+#include "./Debugger/Debugger.h"
+#include "./UnitTests/UnitTests.h"
 #include "./ECS/ECS.h"
 #include <SDL.h>
 #include "./Components/TransformComponent.h"
@@ -9,7 +11,6 @@
 #include "./Components/AnimationComponent.h"
 #include "./Components/KeyboardControlledComponent.h"
 #include "./Components/ProjectileDischargerComponent.h";
-#include "./Components/PlayerComponent.h"
 #include "./Systems/MovementSystem.h"
 #include "./Systems/KeyboardControlSystem.h"
 #include "./Systems/CollisionSystem.h"
@@ -19,6 +20,10 @@
 #include "./Systems/DamageSystem.h"
 #include "./Systems/LifetimeSystem.h"
 #include "./Systems/ProjectileDischargeSystem.h"
+#include "./Systems/ScoreSystem.h"
+
+const int WIN_WIDTH = 980;
+const int WIN_HEIGHT = 980;
 
 Game::Game() {
 	isRunning = false;
@@ -43,39 +48,72 @@ void Game::Setup() {
 	compManager->AddSystem<DamageSystem>();
 	compManager->AddSystem<ProjectileDischargeSystem>();
 	compManager->AddSystem<LifetimeSystem>();
+	compManager->AddSystem<ScoreSystem>();
 
 	// Add Assets
+	assetStore->AddTexture(renderer, "ship", "./Assets/Images/ship.png");
 	assetStore->AddTexture(renderer, "invader1", "./Assets/Images/invader1.png");
-	assetStore->AddTexture(renderer, "invader1a", "./Assets/Images/invader1a.png");
-	assetStore->AddTexture(renderer, "invader1b", "./Assets/Images/invader1b.png");
 	assetStore->AddTexture(renderer, "invader2", "./Assets/Images/invader2.png");
+	assetStore->AddTexture(renderer, "invader3", "./Assets/Images/invader3.png");
 	assetStore->AddTexture(renderer, "projectile1", "./Assets/Images/projectile1.png");
+	assetStore->AddTexture(renderer, "projectile2", "./Assets/Images/projectile2.png");
 
-	Entity test = compManager->CreateEntity();
-	test.AddComponent<TransformComponent>(glm::vec2(400.0, 400.0), glm::vec2(1.0, 1.0), 0.0);
-	test.AddComponent<SpriteComponent>("invader2", 110, 100);
-	test.AddComponent<AnimationComponent>(2, 1, true);
-	test.AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
-	test.AddComponent<BoxColliderComponent>(110, 100);
-	test.AddComponent<KeyboardControlledComponent>(200, true, false);
-	test.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, -200.0), 0, 4000, 500);
-	test.Tag("Player");
+	LoadLevel();
+}
 
-	Entity test2 = compManager->CreateEntity();
-	test2.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
-	test2.AddComponent<SpriteComponent>("invader1", 100, 100);
-	test2.AddComponent<AnimationComponent>(2, 1, true);
-	test2.AddComponent<BoxColliderComponent>(100, 100);
-	test2.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 3000, 4000);
-	test2.Group("Enemy");
+void Game::LoadLevel() {
+	// Player
+	Entity player = compManager->CreateEntity();
+	player.AddComponent<TransformComponent>(glm::vec2(WIN_WIDTH / 2 - 55, WIN_HEIGHT - 200), glm::vec2(2.0, 2.0), 0.0);
+	player.AddComponent<SpriteComponent>("ship", 30, 30);
+	player.AddComponent<RigidBodyComponent>(glm::vec2(0, 0));
+	player.AddComponent<BoxColliderComponent>(30 * 2.0, 30 * 2.0);
+	player.AddComponent<KeyboardControlledComponent>(200, true, false);
+	player.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, -200.0), 0, 4000, 500);
+	player.Tag("Player");
 
-	Entity test3 = compManager->CreateEntity();
-	test3.AddComponent<TransformComponent>(glm::vec2(400.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
-	test3.AddComponent<SpriteComponent>("invader1", 100, 100);
-	test3.AddComponent<AnimationComponent>(2, 1, true);
-	test3.AddComponent<BoxColliderComponent>(100, 100);
-	test3.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 100.0), 2000, 4000);
-	test3.Group("Enemy");
+	// Alien grid
+	int rows = 5;
+	int columns = 11;
+	int gap = 15;
+	glm::vec2 initialPosition(100, 100);
+
+	if (UnitTests::unitTest > 0 && UnitTests::unitTest <= 3) {
+		rows += UnitTests::unitTest;
+	}
+
+	for (int row = 0; row < rows; row++) {
+		for (int col = 0; col < columns; col++) {
+			// Find position
+			glm::vec2 position = initialPosition + glm::vec2((60 + gap) * col, 60 * row);
+
+			// Determine sprite & score to use
+			std::string spriteName;
+			int score;
+			if (row == 0) {
+				spriteName = "invader3";
+				score = 30;
+			}
+			else if (row <= 2) {
+				spriteName = "invader2";
+				score = 20;
+			}
+			else {
+				spriteName = "invader1";
+				score = 10;
+			}
+
+			// Create entity to add
+			Entity alien = compManager->CreateEntity();
+			alien.AddComponent<TransformComponent>(position, glm::vec2(2.0, 2.0), 0.0);
+			alien.AddComponent<SpriteComponent>(spriteName, 30, 30);
+			alien.AddComponent<AnimationComponent>(2, 1, true);
+			alien.AddComponent<BoxColliderComponent>(30 * 2.0, 30 * 2.0);
+			alien.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 200.0), 0, 4000, 0, 1000, 40000);
+			alien.AddComponent<ScoreComponent>(score);
+			alien.Group("Enemy");
+		}
+	}
 }
 
 void Game::Initalize() {
@@ -89,8 +127,8 @@ void Game::Initalize() {
 		"2D Game Engine", // Window title
 		SDL_WINDOWPOS_CENTERED, // Center the window on width & height
 		SDL_WINDOWPOS_CENTERED,
-		800, // Window resolution: width & height
-		600,
+		WIN_WIDTH, // Window resolution: width & height
+		WIN_HEIGHT,
 		SDL_WINDOW_SHOWN // Show window
 	);
 
@@ -138,9 +176,6 @@ void Game::ProcessInput() {
 				isRunning = false;
 				break;
 			}
-			if (event.key.keysym.sym == SDLK_p) {
-				isDebugging = !isDebugging;
-			}
 			eventBus->DispatchEvent<KeyPressedEvent>(event.key.keysym.sym, true);
 			break;
 		}
@@ -167,6 +202,7 @@ void Game::Update() {
 	compManager->GetSystem<DamageSystem>().ListenToEvents(eventBus); // Establish listeners
 	compManager->GetSystem<KeyboardControlSystem>().ListenToEvents(eventBus);
 	compManager->GetSystem<ProjectileDischargeSystem>().ListenToEvents(eventBus);
+	compManager->GetSystem<ScoreSystem>().ListenToEvents(eventBus);
 
 	// Update systems
 	compManager->GetSystem<MovementSystem>().Update(deltaTime);
@@ -185,7 +221,7 @@ void Game::Render() {
 
 	// Render objects
 	compManager->GetSystem<RenderSystem>().Update(renderer, assetStore);
-	if (isDebugging) compManager->GetSystem<CollisionDebugSystem>().Update(renderer);
+	if (isDebugging || (Debugger::debugLevel == 5 || Debugger::debugLevel == 9)) compManager->GetSystem<CollisionDebugSystem>().Update(renderer);
 
 	SDL_RenderPresent(renderer);
 }

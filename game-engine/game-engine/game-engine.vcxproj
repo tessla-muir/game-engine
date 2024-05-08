@@ -143,10 +143,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AssetStore\AssetStore.cpp" />
+    <ClCompile Include="Debugger\Debugger.cpp" />
     <ClCompile Include="ECS\ECS.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Logger\Logger.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="UnitTests\UnitTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetStore\AssetStore.h" />
@@ -155,11 +157,12 @@
     <ClInclude Include="Components\KeyboardControlledComponent.h" />
     <ClInclude Include="Components\LifetimeComponent.h" />
     <ClInclude Include="Components\ParticleComponent.h" />
-    <ClInclude Include="Components\PlayerComponent.h" />
     <ClInclude Include="Components\ProjectileDischargerComponent.h" />
     <ClInclude Include="Components\RigidbodyComponent.h" />
+    <ClInclude Include="Components\ScoreComponent.h" />
     <ClInclude Include="Components\SpriteComponent.h" />
     <ClInclude Include="Components\TransformComponent.h" />
+    <ClInclude Include="Debugger\Debugger.h" />
     <ClInclude Include="ECS\ECS.h" />
     <ClInclude Include="Events\CollisionEvent.h" />
     <ClInclude Include="Events\EventBus\Event.h" />
@@ -176,12 +179,23 @@
     <ClInclude Include="Systems\MovementSystem.h" />
     <ClInclude Include="Systems\ProjectileDischargeSystem.h" />
     <ClInclude Include="Systems\RenderSystem.h" />
+    <ClInclude Include="Systems\ScoreSystem.h" />
+    <ClInclude Include="UnitTests\UnitTests.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Assets\Images\alienship.png" />
+    <Image Include="Assets\Images\alien_death.png" />
+    <Image Include="Assets\Images\invader1.png" />
     <Image Include="Assets\Images\invader1a.png" />
     <Image Include="Assets\Images\invader1b.png" />
+    <Image Include="Assets\Images\invader2.png" />
     <Image Include="Assets\Images\invader2a.png" />
     <Image Include="Assets\Images\invader2b.png" />
+    <Image Include="Assets\Images\invader3.png" />
+    <Image Include="Assets\Images\projectile1.png" />
+    <Image Include="Assets\Images\projectile2.png" />
+    <Image Include="Assets\Images\ship.png" />
+    <Image Include="Assets\Images\ship_destroyed.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

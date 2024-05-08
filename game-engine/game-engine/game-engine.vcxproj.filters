@@ -33,6 +33,12 @@
     <ClCompile Include="AssetStore\AssetStore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Debugger\Debugger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\UnitTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -110,10 +116,19 @@
     <ClInclude Include="Systems\LifetimeSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\PlayerComponent.h">
+    <ClInclude Include="Components\ParticleComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\ParticleComponent.h">
+    <ClInclude Include="Debugger\Debugger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitTests\UnitTests.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\ScoreComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\ScoreSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -128,6 +143,33 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Assets\Images\invader2a.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\ship_destroyed.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\alien_death.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\alienship.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\invader1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\invader2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\invader3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\projectile1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\projectile2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\Images\ship.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

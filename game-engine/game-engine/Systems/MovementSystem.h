@@ -1,6 +1,7 @@
 #ifndef MOVEMENTSYSTEM_H
 #define MOVEMENTSYSTEM_H
 
+#include "../Logger/Logger.h"
 #include "../ECS/ECS.h"
 #include"../Components/RigidbodyComponent.h"
 #include"../Components/TransformComponent.h"
@@ -20,6 +21,14 @@ class MovementSystem : public System {
 
 				transform.position.x += rigidbody.velocity.x * deltaTime;
 				transform.position.y += rigidbody.velocity.y * deltaTime;
+
+				// Avoid out of boundaries
+				if (!entity.BelongsToGroup("Projectiles") && entity.HasComponent<SpriteComponent>()) {
+					SpriteComponent sprite = entity.GetComponent<SpriteComponent>();
+					int padding = 10;
+					transform.position.x = transform.position.x < padding ? padding : transform.position.x;
+					transform.position.x = transform.position.x > WIN_WIDTH - padding - sprite.width * 2.0 ? WIN_WIDTH - padding - sprite.width * 2.0 : transform.position.x;
+				}
 			}
 		}
 };

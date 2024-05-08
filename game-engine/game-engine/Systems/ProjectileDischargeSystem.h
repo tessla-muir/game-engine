@@ -12,7 +12,7 @@
 #include "../Components/KeyboardControlledComponent.h"
 #include "../Components/ParticleComponent.h"
 #include <SDL.h>
-#include "../Logger/Logger.h"
+#include "../Debugger/Debugger.h"
 
 class ProjectileDischargeSystem : public System {
 	public:
@@ -49,11 +49,13 @@ class ProjectileDischargeSystem : public System {
 							Entity projectile = entity.compManager->CreateEntity();
 							projectile.AddComponent<TransformComponent>(projPosition, glm::vec2(1.0, 1.0), 0.0);
 							projectile.AddComponent<RigidBodyComponent>(projectileDischarger.velocity);
-							projectile.AddComponent<SpriteComponent>("projectile1", 8, 8);
+							projectile.AddComponent<SpriteComponent>("projectile2", 8, 8);
 							projectile.AddComponent<BoxColliderComponent>(8, 8);
 							projectile.AddComponent<LifetimeComponent>(projectileDischarger.projectileDuration);
 							projectile.AddComponent<ParticleComponent>(true);
 							projectile.Group("Projectiles");
+
+							if (Debugger::debugLevel == 4 || Debugger::debugLevel == 9) Debugger::Log("ProjectileDischargeSystem: Player shot out projectile " + std::to_string(projectile.GetId()));
 
 							// Update time
 							projectileDischarger.lastDischargeTime = SDL_GetTicks();
@@ -69,29 +71,63 @@ class ProjectileDischargeSystem : public System {
 				ProjectileDischargerComponent& projectileDischarger = entity.GetComponent<ProjectileDischargerComponent>();
 				TransformComponent transform = entity.GetComponent<TransformComponent>();
 
-				if (projectileDischarger.dischargeFrequency == 0) continue; // Don't shoot projectiles repeatedly if frequency is 0
+				// Consisten Fire Frequency
+				if (projectileDischarger.dischargeFrequency != 0) {
+					if (SDL_GetTicks() - projectileDischarger.lastDischargeTime > projectileDischarger.dischargeFrequency) {
+						glm::vec2 projPosition = transform.position;
+						if (entity.HasComponent<SpriteComponent>()) {
+							// Push to center of sprite
+							SpriteComponent sprite = entity.GetComponent<SpriteComponent>();
+							projPosition.x += (transform.scale.x * sprite.width / 2);
+							projPosition.y += (transform.scale.y * sprite.height / 2);
+						}
 
-				if (SDL_GetTicks() - projectileDischarger.lastDischargeTime > projectileDischarger.dischargeFrequency) {
-					glm::vec2 projPosition = transform.position;
-					if (entity.HasComponent<SpriteComponent>()) {
-						// Push to center of sprite
-						SpriteComponent sprite = entity.GetComponent<SpriteComponent>();
-						projPosition.x += (transform.scale.x * sprite.width / 2);
-						projPosition.y += (transform.scale.y * sprite.height / 2);
+						// Add the projectile
+						Entity projectile = entity.compManager->CreateEntity();
+						projectile.AddComponent<TransformComponent>(projPosition, glm::vec2(1.0, 1.0), 0.0);
+						projectile.AddComponent<RigidBodyComponent>(projectileDischarger.velocity);
+						projectile.AddComponent<SpriteComponent>("projectile1", 8, 8);
+						projectile.AddComponent<BoxColliderComponent>(8, 8);
+						projectile.AddComponent<LifetimeComponent>(projectileDischarger.projectileDuration);
+						projectile.AddComponent<ParticleComponent>(false);
+						projectile.Group("Projectiles");
+
+						if (Debugger::debugLevel == 4 || Debugger::debugLevel == 9) Debugger::Log("ProjectileDischargeSystem: Entity " + std::to_string(entity.GetId()) + " shot out projectile " + std::to_string(projectile.GetId()));
+
+						// Update time
+						projectileDischarger.lastDischargeTime = SDL_GetTicks();
 					}
+				}
+				// Random Fire Frequency
+				else if (projectileDischarger.randomTime != 0) {
+					if (SDL_GetTicks() - projectileDischarger.lastDischargeTime > projectileDischarger.randomTime) {
+						glm::vec2 projPosition = transform.position;
+						if (entity.HasComponent<SpriteComponent>()) {
+							// Push to center of sprite
+							SpriteComponent sprite = entity.GetComponent<SpriteComponent>();
+							projPosition.x += (transform.scale.x * sprite.width / 2);
+							projPosition.y += (transform.scale.y * sprite.height / 2);
+						}
 
-					// Add the projectile
-					Entity projectile = entity.compManager->CreateEntity();
-					projectile.AddComponent<TransformComponent>(projPosition, glm::vec2(1.0, 1.0), 0.0);
-					projectile.AddComponent<RigidBodyComponent>(projectileDischarger.velocity);
-					projectile.AddComponent<SpriteComponent>("projectile1", 8, 8);
-					projectile.AddComponent<BoxColliderComponent>(8, 8);
-					projectile.AddComponent<LifetimeComponent>(projectileDischarger.projectileDuration);
-					projectile.AddComponent<ParticleComponent>(false);
-					projectile.Group("Projectiles");
+						// Add the projectile
+						Entity projectile = entity.compManager->CreateEntity();
+						projectile.AddComponent<TransformComponent>(projPosition, glm::vec2(1.0, 1.0), 0.0);
+						projectile.AddComponent<RigidBodyComponent>(projectileDischarger.velocity);
+						projectile.AddComponent<SpriteComponent>("projectile1", 8, 8);
+						projectile.AddComponent<BoxColliderComponent>(8, 8);
+						projectile.AddComponent<LifetimeComponent>(projectileDischarger.projectileDuration);
+						projectile.AddComponent<ParticleComponent>(false);
+						projectile.Group("Projectiles");
 
-					// Update time
-					projectileDischarger.lastDischargeTime = SDL_GetTicks();
+						if (Debugger::debugLevel == 4 || Debugger::debugLevel == 9) Debugger::Log("ProjectileDischargeSystem: Entity " + std::to_string(entity.GetId()) + " shot out projectile " + std::to_string(projectile.GetId()));
+
+						// Update time
+						projectileDischarger.lastDischargeTime = SDL_GetTicks();
+
+						// Get new random number
+						projectileDischarger.min = 5000;
+						projectileDischarger.randomTime = projectileDischarger.min + rand() % (projectileDischarger.max - projectileDischarger.min + 1);
+					}
 				}
 			}
 		}

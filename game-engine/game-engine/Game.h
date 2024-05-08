@@ -9,6 +9,9 @@
 const int FPS = 60;
 const int FRAME_MILISECS = (1000 / FPS);
 
+extern const int WIN_WIDTH;
+extern const int WIN_HEIGHT;
+
 class Game {
 private:
 	bool isRunning;
@@ -25,6 +28,7 @@ private:
 		~Game();
 		void Initalize();
 		void Setup();
+		void LoadLevel();
 		void Run();
 		void ProcessInput();
 		void Update();
