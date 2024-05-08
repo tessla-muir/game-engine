@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "./Logger/Logger.h"
 #include "./Debugger/Debugger.h"
+#include "./UnitTests/UnitTests.h"
 #include "./ECS/ECS.h"
 #include <SDL.h>
 #include "./Components/TransformComponent.h"
@@ -73,6 +74,10 @@ void Game::LoadLevel() {
 	int columns = 11;
 	int gap = 15;
 	glm::vec2 initialPosition(100, 100);
+
+	if (UnitTests::unitTest > 0 && UnitTests::unitTest <= 3) {
+		rows += UnitTests::unitTest;
+	}
 
 	for (int row = 0; row < rows; row++) {
 		for (int col = 0; col < columns; col++) {

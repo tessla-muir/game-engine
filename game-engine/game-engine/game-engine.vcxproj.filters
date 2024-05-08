@@ -36,6 +36,9 @@
     <ClCompile Include="Debugger\Debugger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UnitTests\UnitTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -117,6 +120,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Debugger\Debugger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitTests\UnitTests.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
