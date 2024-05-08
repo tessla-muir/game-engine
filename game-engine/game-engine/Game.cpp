@@ -20,6 +20,7 @@
 #include "./Systems/DamageSystem.h"
 #include "./Systems/LifetimeSystem.h"
 #include "./Systems/ProjectileDischargeSystem.h"
+#include "./Systems/ScoreSystem.h"
 
 const int WIN_WIDTH = 980;
 const int WIN_HEIGHT = 980;
@@ -47,6 +48,7 @@ void Game::Setup() {
 	compManager->AddSystem<DamageSystem>();
 	compManager->AddSystem<ProjectileDischargeSystem>();
 	compManager->AddSystem<LifetimeSystem>();
+	compManager->AddSystem<ScoreSystem>();
 
 	// Add Assets
 	assetStore->AddTexture(renderer, "ship", "./Assets/Images/ship.png");
@@ -85,16 +87,20 @@ void Game::LoadLevel() {
 			// Find position
 			glm::vec2 position = initialPosition + glm::vec2((60 + gap) * col, 60 * row);
 
-			// Determine sprite to use
+			// Determine sprite & score to use
 			std::string spriteName;
+			int score;
 			if (row == 0) {
 				spriteName = "invader3";
+				score = 30;
 			}
 			else if (row <= 2) {
 				spriteName = "invader2";
+				score = 20;
 			}
-			else if (row > 2) {
+			else {
 				spriteName = "invader1";
+				score = 10;
 			}
 
 			// Create entity to add
@@ -104,6 +110,7 @@ void Game::LoadLevel() {
 			alien.AddComponent<AnimationComponent>(2, 1, true);
 			alien.AddComponent<BoxColliderComponent>(30 * 2.0, 30 * 2.0);
 			alien.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 200.0), 0, 4000, 0, 1000, 40000);
+			alien.AddComponent<ScoreComponent>(score);
 			alien.Group("Enemy");
 		}
 	}
@@ -195,6 +202,7 @@ void Game::Update() {
 	compManager->GetSystem<DamageSystem>().ListenToEvents(eventBus); // Establish listeners
 	compManager->GetSystem<KeyboardControlSystem>().ListenToEvents(eventBus);
 	compManager->GetSystem<ProjectileDischargeSystem>().ListenToEvents(eventBus);
+	compManager->GetSystem<ScoreSystem>().ListenToEvents(eventBus);
 
 	// Update systems
 	compManager->GetSystem<MovementSystem>().Update(deltaTime);

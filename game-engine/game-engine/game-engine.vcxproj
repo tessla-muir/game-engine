@@ -159,6 +159,7 @@
     <ClInclude Include="Components\ParticleComponent.h" />
     <ClInclude Include="Components\ProjectileDischargerComponent.h" />
     <ClInclude Include="Components\RigidbodyComponent.h" />
+    <ClInclude Include="Components\ScoreComponent.h" />
     <ClInclude Include="Components\SpriteComponent.h" />
     <ClInclude Include="Components\TransformComponent.h" />
     <ClInclude Include="Debugger\Debugger.h" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Systems\MovementSystem.h" />
     <ClInclude Include="Systems\ProjectileDischargeSystem.h" />
     <ClInclude Include="Systems\RenderSystem.h" />
+    <ClInclude Include="Systems\ScoreSystem.h" />
     <ClInclude Include="UnitTests\UnitTests.h" />
   </ItemGroup>
   <ItemGroup>

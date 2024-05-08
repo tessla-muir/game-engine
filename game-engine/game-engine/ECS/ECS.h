@@ -246,9 +246,9 @@ void ComponentManager::RemoveComponent(Entity entity) {
 		return;
 	}
 
-	//// Remove component
-	//std::shared_ptr<Pool<TComp>> compPool = std::static_pointer_cast<Pool<TComp>>(componentPools[componentId]);
-	//compPool->Remove(entityId);
+	// Remove component
+	std::shared_ptr<Pool<TComp>> compPool = std::static_pointer_cast<Pool<TComp>>(componentPools[componentId]);
+	compPool->Remove(entityId);
 
 	// Deactivate signature part
 	entitySignatures[entityId].set(componentId, false);
