@@ -54,6 +54,7 @@ void Game::Setup() {
 	assetStore->AddTexture(renderer, "invader2", "./Assets/Images/invader2.png");
 	assetStore->AddTexture(renderer, "invader3", "./Assets/Images/invader3.png");
 	assetStore->AddTexture(renderer, "projectile1", "./Assets/Images/projectile1.png");
+	assetStore->AddTexture(renderer, "projectile2", "./Assets/Images/projectile2.png");
 
 	LoadLevel();
 }
@@ -102,6 +103,7 @@ void Game::LoadLevel() {
 			alien.AddComponent<SpriteComponent>(spriteName, 30, 30);
 			alien.AddComponent<AnimationComponent>(2, 1, true);
 			alien.AddComponent<BoxColliderComponent>(30 * 2.0, 30 * 2.0);
+			alien.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, 200.0), 0, 4000, 0, 1000, 40000);
 			alien.Group("Enemy");
 		}
 	}
