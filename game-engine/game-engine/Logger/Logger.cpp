@@ -1,8 +1,10 @@
 #include "Logger.h"
 #include <string>
 #include <iostream>
-#include <ctime>
+#include <iomanip>
 #include <chrono>
+#include <sstream>
+#include <ctime>
 
 std::vector<LogEntry> Logger::messages;
 
@@ -12,12 +14,11 @@ std::string GetTimeString() {
 	std::time_t time = std::chrono::system_clock::to_time_t(timePoint);
 
 	// Format time point
-	std::string timeString(30, '\0');
-	struct tm timeInfo;
-	localtime_s(&timeInfo, &time);
-	std::strftime(&timeString[0], timeString.size(), "%H:%M:%S", &timeInfo);
-
-	return timeString;
+	std::tm time_info;
+	localtime_s(&time_info, &time);
+	char time_str[9]; // HH:MM:SS\0
+	std::strftime(time_str, sizeof(time_str), "%H:%M:%S", &time_info);
+	return std::string(time_str);
 }
 
 void Logger::Log(const std::string& msg) {

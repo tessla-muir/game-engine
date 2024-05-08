@@ -40,7 +40,7 @@ void Debugger::DisplayDebugLevel() {
 			Logger::Debug("Debugging ECS - Entites & Comopnents");
 			break;
 		case 3:
-			Logger::Debug("Deugging Events");
+			Logger::Debug("Debugging Events");
 			break;
 		case 4:
 			Logger::Debug("Debugging ProjectileDischarger");
