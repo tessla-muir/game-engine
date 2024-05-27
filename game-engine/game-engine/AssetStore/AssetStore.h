@@ -4,11 +4,12 @@
 #include <map>
 #include <string>
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 class AssetStore {
 	private:
 		std::map<std::string, SDL_Texture*> textures;
-		// Can add on fonts, sounds, etc. later here
+		std::map<std::string, TTF_Font*> fonts;
 
 	public:
 		AssetStore();
@@ -17,6 +18,9 @@ class AssetStore {
 		void ClearAssets();
 		SDL_Texture* GetTexture(const std::string& assetId) const;
 		void AddTexture(SDL_Renderer* renderer, const std::string& assetId, const std::string& filePath);
+
+		TTF_Font* GetFont(const std::string& assetId) const;
+		void AddFont(const std::string assetId, const std::string& filePath, int fontSize = 8);
 };
 
 #endif

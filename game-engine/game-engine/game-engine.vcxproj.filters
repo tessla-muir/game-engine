@@ -173,4 +173,7 @@
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\..\..\..\Desktop\ATROX.TTF" />
+  </ItemGroup>
 </Project>

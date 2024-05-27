@@ -50,13 +50,16 @@ void Game::Setup() {
 	compManager->AddSystem<LifetimeSystem>();
 	compManager->AddSystem<ScoreSystem>();
 
-	// Add Assets
+	// Add Assets -- Textures
 	assetStore->AddTexture(renderer, "ship", "./Assets/Images/ship.png");
 	assetStore->AddTexture(renderer, "invader1", "./Assets/Images/invader1.png");
 	assetStore->AddTexture(renderer, "invader2", "./Assets/Images/invader2.png");
 	assetStore->AddTexture(renderer, "invader3", "./Assets/Images/invader3.png");
 	assetStore->AddTexture(renderer, "projectile1", "./Assets/Images/projectile1.png");
 	assetStore->AddTexture(renderer, "projectile2", "./Assets/Images/projectile2.png");
+
+	// Add Assets -- Fonts
+	assetStore->AddFont("ATROX-font", "./Assets/Fonts/ATROX.ttf", 16);
 
 	LoadLevel();
 }
@@ -82,6 +85,7 @@ void Game::LoadLevel() {
 		rows += UnitTests::unitTest;
 	}
 
+	// Add aliens
 	for (int row = 0; row < rows; row++) {
 		for (int col = 0; col < columns; col++) {
 			// Find position
@@ -114,6 +118,9 @@ void Game::LoadLevel() {
 			alien.Group("Enemy");
 		}
 	}
+
+	Entity label = compManager->CreateEntity();
+	// label.AddComponent<Text>();
 }
 
 void Game::Initalize() {

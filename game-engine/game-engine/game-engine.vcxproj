@@ -197,6 +197,9 @@
     <Image Include="Assets\Images\ship.png" />
     <Image Include="Assets\Images\ship_destroyed.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\..\..\..\Desktop\ATROX.TTF" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
