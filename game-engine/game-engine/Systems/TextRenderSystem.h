@@ -28,9 +28,22 @@ class TextRenderSystem : public System {
 				int height = 0;
 				SDL_QueryTexture(texture, NULL, NULL, &width, &height);
 
+				// Determine text's x based on alignment
+				int posX = 0;
+
+				if (text.alignment == Left) {
+					posX = transform.position.x;
+				}
+				else if (text.alignment == Center) {
+					posX = transform.position.x - width / 2;
+				}
+				else if (text.alignment == Right) {
+					posX = transform.position.x - width;
+				}
+
 				// Rectangle that text goes into
 				SDL_Rect destRect = {
-					transform.position.x,
+					posX,
 					transform.position.y,
 					width,
 					height

@@ -122,10 +122,10 @@ void Game::LoadLevel() {
 		}
 	}
 
-	Entity label = compManager->CreateEntity();
+	Entity title = compManager->CreateEntity();
 	SDL_Color white = { 255, 255, 255 };
-	label.AddComponent<TextComponent>("Space Invaders", "ATROX-font", white);
-	label.AddComponent<TransformComponent>(glm::vec2(WIN_WIDTH / 2, 50));
+	title.AddComponent<TextComponent>("Space Invaders", "ATROX-font", white, Center);
+	title.AddComponent<TransformComponent>(glm::vec2(WIN_WIDTH / 2, 50));
 }
 
 void Game::Initalize() {
