@@ -11,6 +11,7 @@
 #include "./Components/AnimationComponent.h"
 #include "./Components/KeyboardControlledComponent.h"
 #include "./Components/ProjectileDischargerComponent.h";
+#include "./Components/TextComponent.h"
 #include "./Systems/MovementSystem.h"
 #include "./Systems/KeyboardControlSystem.h"
 #include "./Systems/CollisionSystem.h"
@@ -21,6 +22,7 @@
 #include "./Systems/LifetimeSystem.h"
 #include "./Systems/ProjectileDischargeSystem.h"
 #include "./Systems/ScoreSystem.h"
+#include "./Systems/TextRenderSystem.h"
 
 const int WIN_WIDTH = 980;
 const int WIN_HEIGHT = 980;
@@ -49,6 +51,7 @@ void Game::Setup() {
 	compManager->AddSystem<ProjectileDischargeSystem>();
 	compManager->AddSystem<LifetimeSystem>();
 	compManager->AddSystem<ScoreSystem>();
+	compManager->AddSystem<TextRenderSystem>();
 
 	// Add Assets -- Textures
 	assetStore->AddTexture(renderer, "ship", "./Assets/Images/ship.png");
@@ -59,7 +62,7 @@ void Game::Setup() {
 	assetStore->AddTexture(renderer, "projectile2", "./Assets/Images/projectile2.png");
 
 	// Add Assets -- Fonts
-	assetStore->AddFont("ATROX-font", "./Assets/Fonts/ATROX.ttf", 16);
+	assetStore->AddFont("ATROX-font", "./Assets/Fonts/ATROX.ttf", 50);
 
 	LoadLevel();
 }
@@ -120,7 +123,9 @@ void Game::LoadLevel() {
 	}
 
 	Entity label = compManager->CreateEntity();
-	// label.AddComponent<Text>();
+	SDL_Color white = { 255, 255, 255 };
+	label.AddComponent<TextComponent>("Space Invaders", "ATROX-font", white);
+	label.AddComponent<TransformComponent>(glm::vec2(WIN_WIDTH / 2, 50));
 }
 
 void Game::Initalize() {
@@ -128,6 +133,11 @@ void Game::Initalize() {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		Logger::Error("Game.cs: SDL Initialization Error");
 		return;
+	}
+
+	// Intalize SDL fonts
+	if (TTF_Init() != 0) {
+		Logger::Error("Game.cs: SDL Font Intalization Error");
 	}
 
 	window = SDL_CreateWindow(
@@ -229,6 +239,9 @@ void Game::Render() {
 	// Render objects
 	compManager->GetSystem<RenderSystem>().Update(renderer, assetStore);
 	if (isDebugging || (Debugger::debugLevel == 5 || Debugger::debugLevel == 9)) compManager->GetSystem<CollisionDebugSystem>().Update(renderer);
+
+	// Render UI
+	compManager->GetSystem<TextRenderSystem>().Update(renderer, assetStore);
 
 	SDL_RenderPresent(renderer);
 }

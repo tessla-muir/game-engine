@@ -1,5 +1,6 @@
 #include "AssetStore.h"
 #include <SDL_Image.h>
+#include "../Logger/Logger.h"
 
 AssetStore::AssetStore() {}
 
@@ -20,6 +21,7 @@ void AssetStore::ClearAssets() {
 }
 
 SDL_Texture* AssetStore::GetTexture(const std::string& assetId) const {
+	if (textures.at(assetId) == NULL) Logger::Warn("Couldn't find texture asset: " + assetId);
 	return textures.at(assetId);
 }
 
@@ -30,6 +32,7 @@ void AssetStore::AddTexture(SDL_Renderer* renderer, const std::string& assetId, 
 }
 
 TTF_Font* AssetStore::GetFont(const std::string& assetId) const {
+	if (fonts.at(assetId) == NULL) Logger::Warn("Couldn't find font asset: " + assetId);
 	return fonts.at(assetId);
 }
 
