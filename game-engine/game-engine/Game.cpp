@@ -47,7 +47,7 @@ void Game::Setup() {
 	compManager->AddSystem<AnimationSystem>();
 	compManager->AddSystem<CollisionSystem>();
 	compManager->AddSystem<CollisionDebugSystem>();
-	compManager->AddSystem<DamageSystem>();
+	compManager->AddSystem<DamageSystem>(eventBus);
 	compManager->AddSystem<ProjectileDischargeSystem>();
 	compManager->AddSystem<LifetimeSystem>();
 	compManager->AddSystem<ScoreSystem>();
@@ -76,6 +76,8 @@ void Game::LoadLevel() {
 	player.AddComponent<BoxColliderComponent>(30 * 2.0, 30 * 2.0);
 	player.AddComponent<KeyboardControlledComponent>(200, true, false);
 	player.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, -200.0), 0, 4000, 500);
+	player.AddComponent<ScoreComponent>(0);
+	compManager->GetSystem<ScoreSystem>().SetPlayerEntity(player);
 	player.Tag("Player");
 
 	// Alien grid

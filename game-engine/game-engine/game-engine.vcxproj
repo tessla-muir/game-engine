@@ -169,6 +169,7 @@
     <ClInclude Include="Events\EventBus\Event.h" />
     <ClInclude Include="Events\EventBus\EventBus.h" />
     <ClInclude Include="Events\KeyPressedEvent.h" />
+    <ClInclude Include="Events\ScoreChangeEvent.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Logger\Logger.h" />
     <ClInclude Include="Systems\AnimationSystem.h" />
