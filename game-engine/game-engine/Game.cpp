@@ -51,7 +51,7 @@ void Game::Setup() {
 	compManager->AddSystem<ProjectileDischargeSystem>();
 	compManager->AddSystem<LifetimeSystem>();
 	compManager->AddSystem<ScoreSystem>();
-	compManager->AddSystem<TextRenderSystem>();
+	compManager->AddSystem<RenderTextSystem>();
 
 	// Add Assets -- Textures
 	assetStore->AddTexture(renderer, "ship", "./Assets/Images/ship.png");
@@ -79,6 +79,13 @@ void Game::LoadLevel() {
 	player.AddComponent<ScoreComponent>(0);
 	compManager->GetSystem<ScoreSystem>().SetPlayerEntity(player);
 	player.Tag("Player");
+
+	// Player Score
+	Entity scoreText = compManager->CreateEntity();
+	SDL_Color white = { 255, 255, 255 };
+	scoreText.AddComponent<TextComponent>("Score: " + std::to_string(player.GetComponent<ScoreComponent>().score), "ATROX-font", white, Center);
+	scoreText.AddComponent<TransformComponent>(glm::vec2(WIN_WIDTH / 2, WIN_HEIGHT - 100));
+	compManager->GetSystem<ScoreSystem>().SetPlayerScoreEntity(scoreText);
 
 	// Alien grid
 	int rows = 5;
@@ -125,7 +132,6 @@ void Game::LoadLevel() {
 	}
 
 	Entity title = compManager->CreateEntity();
-	SDL_Color white = { 255, 255, 255 };
 	title.AddComponent<TextComponent>("Space Invaders", "ATROX-font", white, Center);
 	title.AddComponent<TransformComponent>(glm::vec2(WIN_WIDTH / 2, 50));
 }
@@ -243,7 +249,7 @@ void Game::Render() {
 	if (isDebugging || (Debugger::debugLevel == 5 || Debugger::debugLevel == 9)) compManager->GetSystem<CollisionDebugSystem>().Update(renderer);
 
 	// Render UI
-	compManager->GetSystem<TextRenderSystem>().Update(renderer, assetStore);
+	compManager->GetSystem<RenderTextSystem>().Update(renderer, assetStore);
 
 	SDL_RenderPresent(renderer);
 }

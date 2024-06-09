@@ -20,15 +20,20 @@ class ScoreSystem : public System {
 
 		void onScoreChange(ScoreChangeEvent& event) {
 			playerEntity.GetComponent<ScoreComponent>().score += event.score;
-			Logger::Log("Score: " + std::to_string(playerEntity.GetComponent<ScoreComponent>().score));
+			playerScoreTextEntity.GetComponent<TextComponent>().text = "Score: " + std::to_string(playerEntity.GetComponent<ScoreComponent>().score);
 		}
 
 		void SetPlayerEntity(Entity entity) {
 			playerEntity = entity;
 		}
 
+		void SetPlayerScoreEntity(Entity entity) {
+			playerScoreTextEntity = entity;
+		}
+
 	private:
 		Entity playerEntity;
+		Entity playerScoreTextEntity;
 };
 
 #endif
