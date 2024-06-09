@@ -9,42 +9,31 @@
 #include <memory>
 
 class ScoreSystem : public System {
-	private:
-		int score = 0;
-
 	public:
 		ScoreSystem() {
 			RequireComponent<ScoreComponent>();
 		}
 
 		void ListenToEvents(std::unique_ptr<EventBus>& eventBus) {
-			eventBus->ListenToEvent<CollisionEvent>(this, &ScoreSystem::onCollision);
+			eventBus->ListenToEvent<ScoreChangeEvent>(this, &ScoreSystem::onScoreChange);
 		}
 
-		void onCollision(CollisionEvent& event) {
-			Entity a = event.a;
-			Entity b = event.b;
-
-			if (a.BelongsToGroup("Enemy") && b.BelongsToGroup("Projectiles")) {
-				EnemyProjectileInteraction(b, a);
-			}
-			else if (a.BelongsToGroup("Projectiles") && b.BelongsToGroup("Enemy")) {
-				EnemyProjectileInteraction(a, b);
-			}
+		void onScoreChange(ScoreChangeEvent& event) {
+			playerEntity.GetComponent<ScoreComponent>().score += event.score;
+			playerScoreTextEntity.GetComponent<TextComponent>().text = "Score: " + std::to_string(playerEntity.GetComponent<ScoreComponent>().score);
 		}
 
-		void EnemyProjectileInteraction(Entity proj, Entity enemy) {
-			ParticleComponent particle = proj.GetComponent<ParticleComponent>();
-
-			if (particle.isFriendly) {
-				if (!enemy.HasComponent<ScoreComponent>()) return;
-
-				// Add to score
-				ScoreComponent scoreComp = enemy.GetComponent<ScoreComponent>();
-				score += scoreComp.score;
-				Logger::Log("Score: " + std::to_string(score));
-			}
+		void SetPlayerEntity(Entity entity) {
+			playerEntity = entity;
 		}
+
+		void SetPlayerScoreEntity(Entity entity) {
+			playerScoreTextEntity = entity;
+		}
+
+	private:
+		Entity playerEntity;
+		Entity playerScoreTextEntity;
 };
 
 #endif

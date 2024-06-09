@@ -131,6 +131,15 @@
     <ClInclude Include="Systems\ScoreSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Components\TextComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\TextRenderSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\ScoreChangeEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Images\invader2b.png">
@@ -172,5 +181,9 @@
     <Image Include="Assets\Images\ship.png">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\..\..\..\Desktop\ATROX.TTF" />
+    <Font Include="Assets\Fonts\ATROX.TTF" />
   </ItemGroup>
 </Project>

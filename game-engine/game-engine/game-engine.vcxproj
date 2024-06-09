@@ -161,6 +161,7 @@
     <ClInclude Include="Components\RigidbodyComponent.h" />
     <ClInclude Include="Components\ScoreComponent.h" />
     <ClInclude Include="Components\SpriteComponent.h" />
+    <ClInclude Include="Components\TextComponent.h" />
     <ClInclude Include="Components\TransformComponent.h" />
     <ClInclude Include="Debugger\Debugger.h" />
     <ClInclude Include="ECS\ECS.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="Events\EventBus\Event.h" />
     <ClInclude Include="Events\EventBus\EventBus.h" />
     <ClInclude Include="Events\KeyPressedEvent.h" />
+    <ClInclude Include="Events\ScoreChangeEvent.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Logger\Logger.h" />
     <ClInclude Include="Systems\AnimationSystem.h" />
@@ -180,6 +182,7 @@
     <ClInclude Include="Systems\ProjectileDischargeSystem.h" />
     <ClInclude Include="Systems\RenderSystem.h" />
     <ClInclude Include="Systems\ScoreSystem.h" />
+    <ClInclude Include="Systems\TextRenderSystem.h" />
     <ClInclude Include="UnitTests\UnitTests.h" />
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +199,10 @@
     <Image Include="Assets\Images\projectile2.png" />
     <Image Include="Assets\Images\ship.png" />
     <Image Include="Assets\Images\ship_destroyed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\..\..\..\Desktop\ATROX.TTF" />
+    <Font Include="Assets\Fonts\ATROX.TTF" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -11,6 +11,7 @@
 #include "./Components/AnimationComponent.h"
 #include "./Components/KeyboardControlledComponent.h"
 #include "./Components/ProjectileDischargerComponent.h";
+#include "./Components/TextComponent.h"
 #include "./Systems/MovementSystem.h"
 #include "./Systems/KeyboardControlSystem.h"
 #include "./Systems/CollisionSystem.h"
@@ -21,6 +22,7 @@
 #include "./Systems/LifetimeSystem.h"
 #include "./Systems/ProjectileDischargeSystem.h"
 #include "./Systems/ScoreSystem.h"
+#include "./Systems/TextRenderSystem.h"
 
 const int WIN_WIDTH = 980;
 const int WIN_HEIGHT = 980;
@@ -45,18 +47,22 @@ void Game::Setup() {
 	compManager->AddSystem<AnimationSystem>();
 	compManager->AddSystem<CollisionSystem>();
 	compManager->AddSystem<CollisionDebugSystem>();
-	compManager->AddSystem<DamageSystem>();
+	compManager->AddSystem<DamageSystem>(eventBus);
 	compManager->AddSystem<ProjectileDischargeSystem>();
 	compManager->AddSystem<LifetimeSystem>();
 	compManager->AddSystem<ScoreSystem>();
+	compManager->AddSystem<RenderTextSystem>();
 
-	// Add Assets
+	// Add Assets -- Textures
 	assetStore->AddTexture(renderer, "ship", "./Assets/Images/ship.png");
 	assetStore->AddTexture(renderer, "invader1", "./Assets/Images/invader1.png");
 	assetStore->AddTexture(renderer, "invader2", "./Assets/Images/invader2.png");
 	assetStore->AddTexture(renderer, "invader3", "./Assets/Images/invader3.png");
 	assetStore->AddTexture(renderer, "projectile1", "./Assets/Images/projectile1.png");
 	assetStore->AddTexture(renderer, "projectile2", "./Assets/Images/projectile2.png");
+
+	// Add Assets -- Fonts
+	assetStore->AddFont("ATROX-font", "./Assets/Fonts/ATROX.ttf", 50);
 
 	LoadLevel();
 }
@@ -70,7 +76,16 @@ void Game::LoadLevel() {
 	player.AddComponent<BoxColliderComponent>(30 * 2.0, 30 * 2.0);
 	player.AddComponent<KeyboardControlledComponent>(200, true, false);
 	player.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, -200.0), 0, 4000, 500);
+	player.AddComponent<ScoreComponent>(0);
+	compManager->GetSystem<ScoreSystem>().SetPlayerEntity(player);
 	player.Tag("Player");
+
+	// Player Score
+	Entity scoreText = compManager->CreateEntity();
+	SDL_Color white = { 255, 255, 255 };
+	scoreText.AddComponent<TextComponent>("Score: " + std::to_string(player.GetComponent<ScoreComponent>().score), "ATROX-font", white, Center);
+	scoreText.AddComponent<TransformComponent>(glm::vec2(WIN_WIDTH / 2, WIN_HEIGHT - 100));
+	compManager->GetSystem<ScoreSystem>().SetPlayerScoreEntity(scoreText);
 
 	// Alien grid
 	int rows = 5;
@@ -82,6 +97,7 @@ void Game::LoadLevel() {
 		rows += UnitTests::unitTest;
 	}
 
+	// Add aliens
 	for (int row = 0; row < rows; row++) {
 		for (int col = 0; col < columns; col++) {
 			// Find position
@@ -114,6 +130,10 @@ void Game::LoadLevel() {
 			alien.Group("Enemy");
 		}
 	}
+
+	Entity title = compManager->CreateEntity();
+	title.AddComponent<TextComponent>("Space Invaders", "ATROX-font", white, Center);
+	title.AddComponent<TransformComponent>(glm::vec2(WIN_WIDTH / 2, 50));
 }
 
 void Game::Initalize() {
@@ -121,6 +141,11 @@ void Game::Initalize() {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		Logger::Error("Game.cs: SDL Initialization Error");
 		return;
+	}
+
+	// Intalize SDL fonts
+	if (TTF_Init() != 0) {
+		Logger::Error("Game.cs: SDL Font Intalization Error");
 	}
 
 	window = SDL_CreateWindow(
@@ -222,6 +247,9 @@ void Game::Render() {
 	// Render objects
 	compManager->GetSystem<RenderSystem>().Update(renderer, assetStore);
 	if (isDebugging || (Debugger::debugLevel == 5 || Debugger::debugLevel == 9)) compManager->GetSystem<CollisionDebugSystem>().Update(renderer);
+
+	// Render UI
+	compManager->GetSystem<RenderTextSystem>().Update(renderer, assetStore);
 
 	SDL_RenderPresent(renderer);
 }

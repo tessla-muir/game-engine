@@ -6,12 +6,17 @@
 #include "../ECS/ECS.h"
 #include "../Components/BoxColliderComponent.h"
 #include "../Components/ParticleComponent.h"
+#include "../Components/ScoreComponent.h"
 #include "../Events/EventBus/EventBus.h"
 #include "../Events//CollisionEvent.h"
+#include "../Events/ScoreChangeEvent.h"
 
 class DamageSystem : public System {
+	private:
+		std::unique_ptr<EventBus>& eventBus;
+
 	public:
-		DamageSystem() {
+		DamageSystem(std::unique_ptr<EventBus>& eventBusRef) : eventBus(eventBusRef) {
 			RequireComponent<BoxColliderComponent>();
 		}
 
@@ -55,6 +60,12 @@ class DamageSystem : public System {
 			if (particle.isFriendly) {
 				if (Debugger::debugLevel == 6 || Debugger::debugLevel == 9) Debugger::Log("DamageSystem: Enemy " + std::to_string(enemy.GetId()) + " hit by projectile " + std::to_string(proj.GetId()));
 				
+				// Send off score change event
+				if (enemy.HasComponent<ScoreComponent>()) {
+					eventBus->DispatchEvent<ScoreChangeEvent>(enemy.GetComponent<ScoreComponent>().score);
+				}
+				
+				// Destroy
 				proj.Destroy();
 				enemy.Destroy();
 			}
