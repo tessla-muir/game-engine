@@ -201,7 +201,6 @@
     <Image Include="Assets\Images\ship_destroyed.png" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="..\..\..\..\..\Desktop\ATROX.TTF" />
     <Font Include="Assets\Fonts\ATROX.TTF" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
