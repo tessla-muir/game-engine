@@ -76,14 +76,17 @@ void Game::LoadLevel() {
 	player.AddComponent<BoxColliderComponent>(30 * 2.0, 30 * 2.0);
 	player.AddComponent<KeyboardControlledComponent>(200, true, false);
 	player.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, -200.0), 0, 4000, 500);
-	player.AddComponent<ScoreComponent>(0);
-	compManager->GetSystem<ScoreSystem>().SetPlayerEntity(player);
 	player.Tag("Player");
 
-	// Player Score
+	// Player Score Tracker
+	Entity scoreTracker = compManager->CreateEntity();
+	scoreTracker.AddComponent<ScoreComponent>(0);
+	compManager->GetSystem<ScoreSystem>().SetPlayerEntity(scoreTracker);
+
+	// Player Score Text
 	Entity scoreText = compManager->CreateEntity();
 	SDL_Color white = { 255, 255, 255 };
-	scoreText.AddComponent<TextComponent>("Score: " + std::to_string(player.GetComponent<ScoreComponent>().score), "ATROX-font", white, Center);
+	scoreText.AddComponent<TextComponent>("Score: " + std::to_string(scoreTracker.GetComponent<ScoreComponent>().score), "ATROX-font", white, Center);
 	scoreText.AddComponent<TransformComponent>(glm::vec2(WIN_WIDTH / 2, WIN_HEIGHT - 100));
 	compManager->GetSystem<ScoreSystem>().SetPlayerScoreEntity(scoreText);
 
