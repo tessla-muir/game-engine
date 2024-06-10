@@ -53,6 +53,12 @@ void Game::Setup() {
 	compManager->AddSystem<ScoreSystem>();
 	compManager->AddSystem<RenderTextSystem>();
 
+	// Setup listeners for those systems
+	compManager->GetSystem<DamageSystem>().ListenToEvents(eventBus);
+	compManager->GetSystem<KeyboardControlSystem>().ListenToEvents(eventBus);
+	compManager->GetSystem<ProjectileDischargeSystem>().ListenToEvents(eventBus);
+	compManager->GetSystem<ScoreSystem>().ListenToEvents(eventBus);
+
 	// Add Assets -- Textures
 	assetStore->AddTexture(renderer, "ship", "./Assets/Images/ship.png");
 	assetStore->AddTexture(renderer, "invader1", "./Assets/Images/invader1.png");
@@ -223,14 +229,6 @@ void Game::Update() {
 
 	// Cap deltaTime to avoid large jumps in case of a long frame
 	deltaTime = (deltaTime < 30) ? deltaTime : 30;
-
-	// System Listeners
-	// Suboptimal to listen each frame
-	eventBus->Reset(); // Reset Listeners
-	compManager->GetSystem<DamageSystem>().ListenToEvents(eventBus); // Establish listeners
-	compManager->GetSystem<KeyboardControlSystem>().ListenToEvents(eventBus);
-	compManager->GetSystem<ProjectileDischargeSystem>().ListenToEvents(eventBus);
-	compManager->GetSystem<ScoreSystem>().ListenToEvents(eventBus);
 
 	// Update systems
 	compManager->GetSystem<MovementSystem>().Update(deltaTime);
