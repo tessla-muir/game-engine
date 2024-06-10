@@ -56,8 +56,19 @@ void ComponentManager::Update() {
 		RemoveEntityFromSystems(entity);
 		entitySignatures[entity.GetId()].reset();
 
+		// Remove entity from component pools
+		for (auto pool : componentPools) {
+			if (pool) {
+				pool->RemoveEntityFromPool(entity.GetId());
+			}
+		}
+
 		// Allow the id to be reused
 		availableIds.push_back(entity.GetId());
+
+		// Remove entity from tag/groups
+		RemoveEntityTag(entity);
+		RemoveEntityGroup(entity);
 	}
 	entitiesToRemove.clear();
 }
