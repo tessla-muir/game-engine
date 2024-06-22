@@ -79,26 +79,82 @@ class System {
 class BasePool {
 	public:
 		virtual ~BasePool() {}
+		virtual void RemoveEntityFromPool(int entityId) = 0;
 };
 
-// A wrapper class for a vector
 template <typename TComp>
 class Pool : public BasePool {
-private:
-	std::vector<TComp> pool;
+	private:
+		// Keep track of vector holding all the components
+		int size;
+		std::vector<TComp> pool;
 
-public:
-	Pool(int size = 100) { Resize(size); }
-	~Pool() = default;
+		// Keep track of entity ids and index for packing
+		std::unordered_map<int, int> entityToIndex;
+		std::unordered_map<int, int> indexToEntity;
 
-	bool IsEmpty() const { return pool.empty(); }
-	int GetSize() const { return pool.size(); }
-	void Resize(int size) { pool.resize(size); }
-	void Clear() { pool.clear(); }
-	void Add(TComp object) { pool.push_back(object); }
-	void Set(int index, TComp object) { pool[index] = object; }
-	TComp& Get(int index) { return static_cast<TComp&>(pool[index]); }
-	TComp& operator [](unsigned int index) { return pool[index]; }
+	public:
+		Pool(int capacity = 200) {
+			size = 0;
+			pool.resize(capacity);
+		}
+		~Pool() = default;
+
+		bool IsEmpty() const { return size == 0; }
+		int GetSize() const { return size; }
+		void Resize(int size) { pool.resize(size); }
+		void Clear() { pool.clear(); size = 0; }
+
+		void Set(int entityId, TComp object) {
+			// Element already exists - just replace it
+			if (entityToIndex.find(entityId) != entityToIndex.end()) {
+				int index = entityToIndex[entityId];
+				pool[index] = object;
+			}
+			// Otherwise, add new entity
+			else {
+				int index = size;
+				entityToIndex.emplace(entityId, index);
+				indexToEntity.emplace(index, entityId);
+
+				// Resize if necessary
+				if (index >= pool.capacity()) { pool.resize(size * 2); };
+
+				pool[index] = object;
+				size++;
+			}
+		}
+
+		void Remove(int entityId) {
+			// Replace the entity we're removing with the last element
+			int indexToRemove = entityToIndex[entityId];
+			pool[indexToRemove] = pool[size - 1];
+	
+			// Update the maps to match this change
+			int entityIdLast = indexToEntity[size - 1];
+			indexToEntity[indexToRemove] = entityIdLast;
+			entityToIndex[entityIdLast] = indexToRemove;
+
+			// Remove old element from maps
+			indexToEntity.erase(size - 1);
+			entityToIndex.erase(entityId);
+
+			size--;
+		}
+
+		void RemoveEntityFromPool(int entityId) override {
+			// If entity exists in pool, remove it from the pool
+			if (entityToIndex.find(entityId) != entityToIndex.end()) {
+				Remove(entityId);
+			}
+		}
+
+		TComp& Get(int entityId) {
+			int index = entityToIndex[entityId];
+			return static_cast<TComp&>(pool[index]);
+		}
+		
+		TComp& operator [](unsigned int index) { return pool[index]; }
 };
 
 class ComponentManager {
@@ -223,7 +279,7 @@ void ComponentManager::AddComponent(Entity entity, TArgs&& ...args) {
 	}
 
 	// Get pool that matches component type (sprite, transform, etc.)
-    std::shared_ptr<Pool<TComp>> pool = std::static_pointer_cast<Pool<TComp>>(componentPools[componentId]);
+	std::shared_ptr<Pool<TComp>> pool = std::static_pointer_cast<Pool<TComp>>(componentPools[componentId]);
 
 	// Create the new component to add, passing arguments
 	TComp newComp(std::forward<TArgs>(args)...);
@@ -241,6 +297,7 @@ void ComponentManager::RemoveComponent(Entity entity) {
 	const int componentId = Component<TComp>::GetId();
 	const int entityId = entity.GetId();
 
+	// Check that it has the component to remove
 	if (!HasComponent<TComp>(entity)) {
 		Logger::Warn("ECS.h: Entity " + std::to_string(entityId) + " didn't have component " + std::to_string(componentId) + " to remove.");
 		return;

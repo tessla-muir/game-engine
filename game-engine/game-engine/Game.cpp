@@ -53,6 +53,12 @@ void Game::Setup() {
 	compManager->AddSystem<ScoreSystem>();
 	compManager->AddSystem<RenderTextSystem>();
 
+	// Setup listeners for those systems
+	compManager->GetSystem<DamageSystem>().ListenToEvents(eventBus);
+	compManager->GetSystem<KeyboardControlSystem>().ListenToEvents(eventBus);
+	compManager->GetSystem<ProjectileDischargeSystem>().ListenToEvents(eventBus);
+	compManager->GetSystem<ScoreSystem>().ListenToEvents(eventBus);
+
 	// Add Assets -- Textures
 	assetStore->AddTexture(renderer, "ship", "./Assets/Images/ship.png");
 	assetStore->AddTexture(renderer, "invader1", "./Assets/Images/invader1.png");
@@ -76,14 +82,17 @@ void Game::LoadLevel() {
 	player.AddComponent<BoxColliderComponent>(30 * 2.0, 30 * 2.0);
 	player.AddComponent<KeyboardControlledComponent>(200, true, false);
 	player.AddComponent<ProjectileDischargerComponent>(glm::vec2(0.0, -200.0), 0, 4000, 500);
-	player.AddComponent<ScoreComponent>(0);
-	compManager->GetSystem<ScoreSystem>().SetPlayerEntity(player);
 	player.Tag("Player");
 
-	// Player Score
+	// Player Score Tracker
+	Entity scoreTracker = compManager->CreateEntity();
+	scoreTracker.AddComponent<ScoreComponent>(0);
+	compManager->GetSystem<ScoreSystem>().SetPlayerEntity(scoreTracker);
+
+	// Player Score Text
 	Entity scoreText = compManager->CreateEntity();
 	SDL_Color white = { 255, 255, 255 };
-	scoreText.AddComponent<TextComponent>("Score: " + std::to_string(player.GetComponent<ScoreComponent>().score), "ATROX-font", white, Center);
+	scoreText.AddComponent<TextComponent>("Score: " + std::to_string(scoreTracker.GetComponent<ScoreComponent>().score), "ATROX-font", white, Center);
 	scoreText.AddComponent<TransformComponent>(glm::vec2(WIN_WIDTH / 2, WIN_HEIGHT - 100));
 	compManager->GetSystem<ScoreSystem>().SetPlayerScoreEntity(scoreText);
 
@@ -220,14 +229,6 @@ void Game::Update() {
 
 	// Cap deltaTime to avoid large jumps in case of a long frame
 	deltaTime = (deltaTime < 30) ? deltaTime : 30;
-
-	// System Listeners
-	// Suboptimal to listen each frame
-	eventBus->Reset(); // Reset Listeners
-	compManager->GetSystem<DamageSystem>().ListenToEvents(eventBus); // Establish listeners
-	compManager->GetSystem<KeyboardControlSystem>().ListenToEvents(eventBus);
-	compManager->GetSystem<ProjectileDischargeSystem>().ListenToEvents(eventBus);
-	compManager->GetSystem<ScoreSystem>().ListenToEvents(eventBus);
 
 	// Update systems
 	compManager->GetSystem<MovementSystem>().Update(deltaTime);

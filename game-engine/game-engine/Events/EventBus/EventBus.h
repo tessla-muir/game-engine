@@ -66,6 +66,12 @@ class EventBus {
 			listeners[typeid(TEvent)]->push_back(std::move(listener));
 		}
 
+		// Removes listeners for a specific event type
+		template <typename TEvent>
+		void RemoveListeners() {
+			listeners.erase(typeid(TEvent));
+		}
+
 		// Dispatch the generic event <T>
 		// Immediately goes to execute callback functions
 		template <typename TEvent, typename ...TArgs>

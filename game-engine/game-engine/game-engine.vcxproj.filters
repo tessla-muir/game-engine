@@ -183,7 +183,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="..\..\..\..\..\Desktop\ATROX.TTF" />
     <Font Include="Assets\Fonts\ATROX.TTF" />
   </ItemGroup>
 </Project>
