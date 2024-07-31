@@ -8,7 +8,7 @@ I developed a custom 2D game engine from scratch using C++ and SDL, designed to 
 - **Entity Tagging and Grouping**: Supports tagging and grouping of entities, allowing for efficient management and querying of related game objects.
 - **Comprehensive System Implementation**: Designed and integrated systems for rendering, animation, movement, collision detection, damage handling, lifetime management, scoring, and user interface.
 - **Persistent Event Handling**: Implements a robust event handling system that ensures smooth communication between different parts of the engine, improving the responsiveness and interactivity of the games developed with it.
-- **Performance Optimization**: Utilized data-oriented design, packed component pools, and smart pointers for improved cache efficiency, reduced memory fragmentation, and optimal resource utilization.
+- **Performance Optimization**: Improved cache efficiency and reduced memory fragmentation by packing components into contiguous data structures and using efficient indexing and resizing techniques.
 - **Asset Management System**: Managed game assets such as sprites and fonts, facilitating easy loading, unloading, and accessing of resources
 - **Developer Tools**: Integrated a logging system, debugger, and unit testing to ensure reliability and facilitate troubleshooting.
 
